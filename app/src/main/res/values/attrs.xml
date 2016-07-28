@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="MainItem">
+        <attr name="itemmainbackground" format="reference|color" />
+        <attr name="itmeIamge" format="reference|color" />
+        <attr name="itemChinese" format="string" />
+        <attr name="itemEnglish" format="string" />
+    </declare-styleable>
+
+
+</resources>
