@@ -22,6 +22,9 @@
             android:name=".ui.RegisterAndForgetActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity android:name=".ui.MainActivity" />
+        <activity android:name=".ui.SelectAreaActivity" />
+        <activity android:name=".ui.SelectAreasActivity" />
+        <activity android:name=".ui.MyCenterActivity" />
     </application>
 
 </manifest>

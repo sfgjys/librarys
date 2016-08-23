@@ -34,6 +34,16 @@
             android:layout_marginRight="16dp"
             android:src="@mipmap/title_setting" />
 
+        <ImageView
+            android:id="@+id/iv_title_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:src="@mipmap/select_reading_room_to_dialog2"
+            android:visibility="gone" />
+
         <TextView
             android:id="@+id/tv_base_title"
             android:layout_width="wrap_content"
@@ -41,7 +51,7 @@
             android:layout_centerInParent="true"
             android:text="@string/base_title"
             android:textColor="@color/white"
-            android:textSize="28dp" />
+            android:textSize="25dp" />
 
     </RelativeLayout>
 
@@ -49,7 +59,6 @@
         android:id="@+id/fl_base_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
 
     </FrameLayout>
 

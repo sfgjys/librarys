@@ -1,5 +1,6 @@
 package com.minji.librarys.base;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
@@ -8,27 +9,44 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.minji.librarys.R;
+import com.minji.librarys.StringsFiled;
+import com.minji.librarys.uitls.StringUtils;
 
 public abstract class BaseActivity extends FragmentActivity {
 
     private ImageView mBaseTitleImage;
     private ImageView mBaseBack;
     private ImageView mBaseSetting;
+    private ImageView mBaseSelect;
 
     private TextView mBaseTitle;
 
     private FrameLayout mBaseContetn;
-
+    public Bundle savedInstanceState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.base_activity);
 
+        this.savedInstanceState = savedInstanceState;
+
         initView();
+
+        setTitleText();
 
         onCreateContent();
 
+    }
+
+    private void setTitleText() {
+        Intent intentTitle = getIntent();
+        if (intentTitle != null) {
+            String stringTitle = intentTitle.getStringExtra(StringsFiled.ACTIVITY_TITLE);
+            if (!StringUtils.isEmpty(stringTitle)) {
+                mBaseTitle.setText(stringTitle);
+            }
+        }
     }
 
     public abstract void onCreateContent();
@@ -36,6 +54,7 @@ public abstract class BaseActivity extends FragmentActivity {
     private void initView() {
         mBaseTitleImage = (ImageView) findViewById(R.id.iv_title_image);
         mBaseBack = (ImageView) findViewById(R.id.iv_title_back);
+        mBaseSelect = (ImageView) findViewById(R.id.iv_title_select);
         mBaseSetting = (ImageView) findViewById(R.id.iv_title_setting);
         mBaseTitle = (TextView) findViewById(R.id.tv_base_title);
         mBaseContetn = (FrameLayout) findViewById(R.id.fl_base_content);
@@ -56,6 +75,10 @@ public abstract class BaseActivity extends FragmentActivity {
 
     public void setSettingVisibility(int visibility) {
         mBaseSetting.setVisibility(visibility);
+    }
+
+    public ImageView getSelectVisibility() {
+        return mBaseSelect;
     }
 
 

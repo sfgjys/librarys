@@ -1,11 +1,14 @@
 package com.minji.librarys.ui;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
 
 import com.minji.librarys.R;
+import com.minji.librarys.StringsFiled;
 import com.minji.librarys.base.BaseActivity;
 import com.minji.librarys.uitls.SystemTime;
+import com.minji.librarys.uitls.ViewsUitls;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
@@ -41,8 +44,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         switch (v.getId()) {
             case R.id.mi_main_outside_reservation:
+                Intent selectReading = new Intent(ViewsUitls.getContext(), SelectAreasActivity.class);
+                selectReading.putExtra(StringsFiled.ACTIVITY_TITLE, "选择阅览室");
+                startActivity(selectReading);
                 break;
             case R.id.mi_main_me_center:
+                Intent myCenter = new Intent(ViewsUitls.getContext(), MyCenterActivity.class);
+                myCenter.putExtra(StringsFiled.ACTIVITY_TITLE, "个人中心");
+                startActivity(myCenter);
                 break;
             case R.id.mi_main_serach_seat:
                 break;

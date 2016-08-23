@@ -30,4 +30,18 @@
     <string name="main_english_stadium_seats">Museum Seat</string>
     <string name="main_chinese_title_setting">系统设置</string>
     <string name="main_english_title_setting">System Settings</string>
+    <string name="use_ceshi">测试用语</string>
+    <string name="forget_password_find">请输入注册手机号</string>
+    <string name="forget_password_find_affirm">确认</string>
+    <string name="forget_phone_find">手机找回</string>
+    <string name="forget_email_find">邮箱找回</string>
+    <string name="select_area_first_floor">一楼</string>
+    <string name="select_area_fourth_floor">四楼</string>
+    <string name="select_area_thrid_floor">三楼</string>
+    <string name="select_area_second_floor">二楼</string>
+    <string name="select_area_top_free">空闲</string>
+    <string name="select_area_top_appointment">预约</string>
+    <string name="select_area_top_occupation">占用</string>
+    <string name="select_area_reading_room">选择阅览室</string>
+    <string name="dialog_select_area_title">请选择阅览室 !</string>
 </resources>

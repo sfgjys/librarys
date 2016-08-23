@@ -10,4 +10,16 @@ public class StringsFiled {
     public final static String REGISTER_FRAGMENT="register_fragment";
 
     public final static String FORGET_FRAGMENT="forget_fragment";
+
+    public final static String EMAILORFORGET="EmailOrForget";
+
+    public final static String EMAILORFORGETVALUE_EMAIL="email";
+
+    public final static String EMAILORFORGETVALUE_PHONE="forget";
+
+    public final static String ACTIVITY_TITLE="activity_title";
+
+    public final static String SPECIFIC_FLOOR="specific_floor";
+
+
 }

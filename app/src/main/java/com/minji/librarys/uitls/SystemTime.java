@@ -15,9 +15,23 @@ public class SystemTime {
         calendar.setTimeInMillis(currentTimeMillis);
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
-        int date = calendar.get(Calendar.DATE);
-        int hour = calendar.get(Calendar.HOUR);
+        int date = calendar.get(Calendar.DAY_OF_MONTH);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
+
+//       Calendar c = Calendar.getInstance();
+//
+//        int year = c.get(Calendar.YEAR);
+//
+//        int month = c.get(Calendar.MONTH);
+//
+//        int day = c.get(Calendar.DAY_OF_MONTH);
+//
+//        int hour = c.get(Calendar.HOUR_OF_DAY);
+//
+//        int minute = c.get(Calendar.MINUTE);
+
+
         return year + "/" + month + "/" + date + "/" + hour + ":" + minute;
     }
 

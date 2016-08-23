@@ -51,6 +51,7 @@
             android:textColor="@color/thin_green"
             android:textStyle="bold" />
 
+
         <Button
             android:id="@+id/bt_login_button"
             style="@style/left_right_padding"
