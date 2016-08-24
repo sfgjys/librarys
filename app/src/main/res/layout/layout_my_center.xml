@@ -109,8 +109,6 @@
         android:layout_height="0dp"
         android:layout_weight="4.5">
 
-        <include layout="@layout/layout_my_cneter_bottom_normal" />
-
     </FrameLayout>
 
 </LinearLayout>

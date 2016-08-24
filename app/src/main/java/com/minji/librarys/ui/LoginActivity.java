@@ -64,6 +64,7 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
             case R.id.bt_login_button:
                 Intent mainActivity = new Intent(ViewsUitls.getContext(), MainActivity.class);
                 startActivity(mainActivity);
+                finish();
                 break;
         }
 

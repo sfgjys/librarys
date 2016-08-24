@@ -53,11 +53,18 @@ public abstract class BaseActivity extends FragmentActivity {
 
     private void initView() {
         mBaseTitleImage = (ImageView) findViewById(R.id.iv_title_image);
-        mBaseBack = (ImageView) findViewById(R.id.iv_title_back);
         mBaseSelect = (ImageView) findViewById(R.id.iv_title_select);
         mBaseSetting = (ImageView) findViewById(R.id.iv_title_setting);
         mBaseTitle = (TextView) findViewById(R.id.tv_base_title);
         mBaseContetn = (FrameLayout) findViewById(R.id.fl_base_content);
+
+        mBaseBack = (ImageView) findViewById(R.id.iv_title_back);
+        mBaseBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     public void setBackVisibility(int visibility) {
