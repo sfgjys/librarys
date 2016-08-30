@@ -23,6 +23,7 @@ public abstract class BaseActivity extends FragmentActivity {
 
     private FrameLayout mBaseContetn;
     public Bundle savedInstanceState;
+    public String stringTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +43,7 @@ public abstract class BaseActivity extends FragmentActivity {
     private void setTitleText() {
         Intent intentTitle = getIntent();
         if (intentTitle != null) {
-            String stringTitle = intentTitle.getStringExtra(StringsFiled.ACTIVITY_TITLE);
+            stringTitle = intentTitle.getStringExtra(StringsFiled.ACTIVITY_TITLE);
             if (!StringUtils.isEmpty(stringTitle)) {
                 mBaseTitle.setText(stringTitle);
             }

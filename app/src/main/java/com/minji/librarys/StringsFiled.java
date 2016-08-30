@@ -21,5 +21,8 @@ public class StringsFiled {
 
     public final static String SPECIFIC_FLOOR="specific_floor";
 
+    public final static String APPKEY="1695aab984613";
+
+    public final static String APPSECRET="88c3698a24ff9024aa0644ff1a138b96";
 
 }

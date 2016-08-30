@@ -44,71 +44,13 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/my_center_middle_background"
-        android:orientation="horizontal"
-        android:padding="6dp">
-
-        <LinearLayout style="@style/my_center_middle_part_child_layout">
-
-            <TextView
-                style="@style/my_cneter_middle_part_child_top_text_style"
-                android:drawableLeft="@mipmap/my_center_my_all_integral"
-                android:text="我的总积分" />
-
-            <TextView
-                android:id="@+id/tv_my_center_middle_part_all_integral"
-                style="@style/my_cneter_middle_part_child_bottom_text_style"
-                android:text="---" />
-
-        </LinearLayout>
-
-        <ImageView
-            style="@style/my_cneter_middle_part_text_middle_image"
-            android:src="@mipmap/my_center_middle_text_middle" />
-
-        <LinearLayout style="@style/my_center_middle_part_child_layout">
-
-            <TextView
-                style="@style/my_cneter_middle_part_child_top_text_style"
-                android:drawableLeft="@mipmap/my_center_my_add_integral"
-                android:text="今日获得" />
-
-            <TextView
-                android:id="@+id/tv_my_center_middle_part_add_integral"
-                style="@style/my_cneter_middle_part_child_bottom_text_style"
-                android:text="---" />
-
-        </LinearLayout>
-
-        <ImageView
-            style="@style/my_cneter_middle_part_text_middle_image"
-            android:src="@mipmap/my_center_middle_text_middle" />
-
-        <LinearLayout style="@style/my_center_middle_part_child_layout">
-
-            <TextView
-                style="@style/my_cneter_middle_part_child_top_text_style"
-                android:drawableLeft="@mipmap/my_center_my_reduce_integral"
-                android:text="今日消耗" />
-
-            <TextView
-                android:id="@+id/tv_my_center_middle_part_reduce_integral"
-                style="@style/my_cneter_middle_part_child_bottom_text_style"
-                android:text="---" />
-
-        </LinearLayout>
-
-    </LinearLayout>
+    <include layout="@layout/item_my_center_middle_integral_detail" />
 
     <FrameLayout
         android:id="@+id/fl_my_center_bottom_part_contents"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="4.5">
-
     </FrameLayout>
 
 </LinearLayout>

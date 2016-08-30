@@ -18,7 +18,7 @@
     <string name="register_identifying_code_button">获取验证码</string>
     <string name="register_xianzhi_edittext_height">用于限制上面的EditText的高度</string>
     <string name="title_activity_main">MainActivity</string>
-    <string name="main_chinese_outside_reservation">馆外预约</string>
+    <string name="main_chinese_outside_reservation">预约/用座</string>
     <string name="main_english_outside_reservation">Make Appointment</string>
     <string name="main_chinese_me_center">我的中心</string>
     <string name="main_english_me_center">My Center</string>
@@ -26,8 +26,8 @@
     <string name="main_english_serach_seat">Seat Query</string>
     <string name="main_chinese_booking_rules">预约规则</string>
     <string name="main_english_booking_rules">Cancellation Rules</string>
-    <string name="main_chinese_stadium_seats">馆内用座</string>
-    <string name="main_english_stadium_seats">Museum Seat</string>
+    <string name="main_chinese_stadium_seats">取消预约</string>
+    <string name="main_english_stadium_seats">Cancel reservation</string>
     <string name="main_chinese_title_setting">系统设置</string>
     <string name="main_english_title_setting">System Settings</string>
     <string name="use_ceshi">测试用语</string>

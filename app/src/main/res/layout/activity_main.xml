@@ -98,7 +98,7 @@
                 mainitem:itemChinese="@string/main_chinese_stadium_seats"
                 mainitem:itemEnglish="@string/main_english_stadium_seats"
                 mainitem:itemmainbackground="@drawable/selector_main_stadium_seats"
-                mainitem:itmeIamge="@mipmap/main_stadium_seats" />
+                mainitem:itmeIamge="@mipmap/main_cancel_reservation" />
 
             <com.minji.librarys.widget.MainItem
                 android:id="@+id/mi_title_setting"

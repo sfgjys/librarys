@@ -44,16 +44,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         switch (v.getId()) {
             case R.id.mi_main_outside_reservation:
-                Intent selectReading = new Intent(ViewsUitls.getContext(), SelectAreasActivity.class);
-                selectReading.putExtra(StringsFiled.ACTIVITY_TITLE, "选择阅览室");
-                startActivity(selectReading);
+                skipToActivity(SelectAreasActivity.class, "选择阅览室");
                 break;
             case R.id.mi_main_me_center:
-                Intent myCenter = new Intent(ViewsUitls.getContext(), MyCenterActivity.class);
-                myCenter.putExtra(StringsFiled.ACTIVITY_TITLE, "个人中心");
-                startActivity(myCenter);
+                skipToActivity(MyCenterActivity.class, "个人中心");
                 break;
             case R.id.mi_main_serach_seat:
+                skipToActivity(SerachSeatActivity.class,"查询座位");
                 break;
             case R.id.mi_main_booking_rules:
                 break;
@@ -63,5 +60,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 break;
         }
 
+    }
+
+    private void skipToActivity(Class<?> cls, String title) {
+        Intent intent = new Intent(ViewsUitls.getContext(), cls);
+        intent.putExtra(StringsFiled.ACTIVITY_TITLE, title);
+        startActivity(intent);
     }
 }

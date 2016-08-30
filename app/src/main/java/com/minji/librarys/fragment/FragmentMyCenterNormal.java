@@ -1,5 +1,6 @@
 package com.minji.librarys.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,7 +10,10 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.minji.librarys.R;
+import com.minji.librarys.StringsFiled;
+import com.minji.librarys.ui.IntegralAndOrderActivity;
 import com.minji.librarys.ui.MyCenterActivity;
+import com.minji.librarys.uitls.ViewsUitls;
 
 /**
  * Created by user on 2016/8/24.
@@ -38,6 +42,8 @@ public class FragmentMyCenterNormal extends Fragment implements View.OnClickList
     @Override
     public void onClick(View v) {
 
+        Intent intent = new Intent(ViewsUitls.getContext(), IntegralAndOrderActivity.class);
+
         switch (v.getId()) {
             case R.id.my_center_bottom_part_normal_my_information:
                 MyCenterActivity activity = (MyCenterActivity) getActivity();
@@ -47,10 +53,12 @@ public class FragmentMyCenterNormal extends Fragment implements View.OnClickList
 
                 break;
             case R.id.my_center_bottom_part_normal_my_integral:
-
+                intent.putExtra(StringsFiled.ACTIVITY_TITLE, "积分明细");
+                getActivity().startActivity(intent);
                 break;
             case R.id.my_center_bottom_part_normal_my_order:
-
+                intent.putExtra(StringsFiled.ACTIVITY_TITLE, "我的预约");
+                getActivity().startActivity(intent);
                 break;
         }
 
