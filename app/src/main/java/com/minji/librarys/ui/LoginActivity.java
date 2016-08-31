@@ -9,9 +9,27 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.igexin.sdk.PushManager;
 import com.minji.librarys.R;
 import com.minji.librarys.StringsFiled;
+import com.minji.librarys.http.OkHttpManger;
+import com.minji.librarys.uitls.SharedPreferencesUtil;
+import com.minji.librarys.uitls.StringUtils;
+import com.minji.librarys.uitls.ToastUtil;
 import com.minji.librarys.uitls.ViewsUitls;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class LoginActivity extends FragmentActivity implements View.OnClickListener {
 
@@ -29,6 +47,10 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_login);
+
+        SharedPreferencesUtil.saveStirng(this, StringsFiled.CLIENTID, "");
+        System.out.println("===================");
+        PushManager.getInstance().initialize(this.getApplicationContext());
 
         initView();
     }
@@ -62,9 +84,63 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
                 startActivity(registerAndForget);
                 break;
             case R.id.bt_login_button:
-                Intent mainActivity = new Intent(ViewsUitls.getContext(), MainActivity.class);
-                startActivity(mainActivity);
-                finish();
+
+                String userName = mEtUser.getText().toString().trim();
+                String passWord = mEtPassWord.getText().toString().trim();
+                String cid = SharedPreferencesUtil.getString(this, StringsFiled.CLIENTID, "");
+
+                if (!StringUtils.isEmpty(userName) && !StringUtils.isEmpty(passWord) && !StringUtils.isEmpty(cid)) {
+                    System.out.println("userName: " + userName + "  passWord: " + passWord + "  cid: " + cid);
+
+                    OkHttpClient okHttpClient = OkHttpManger.getInstance().getOkHttpClient();
+                    RequestBody formBody = new FormBody.Builder()
+                            .add("username", userName).add("password", passWord).add("cid", userName).add("rememberMe", "false")
+                            .build();
+                    Request request = new Request.Builder()
+                            .url("http://192.168.1.40:8080/library-seat/user/ajaxlogin")
+                            .post(formBody)
+                            .build();
+                    okHttpClient.newCall(request).enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            System.out.println("=========================onFailure=============================");
+                            ViewsUitls.runInMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToastUtil.showToast(LoginActivity.this, "服务器正忙,请稍候");
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            final String result = response.body().string().toString();
+                            System.out.println(result + "      +++++++++++++++++++++++++++++++++");
+                            ViewsUitls.runInMainThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(result);
+                                        String message = jsonObject.optString("message");
+                                        if (result.contains("true")) {
+                                            Intent mainActivity = new Intent(ViewsUitls.getContext(), MainActivity.class);
+                                            startActivity(mainActivity);
+                                            finish();
+                                        }
+                                        ToastUtil.showToast(LoginActivity.this, message);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+
+                        }
+                    });
+
+                } else {
+                    ToastUtil.showToast(this, "账户密码不可为空");
+                }
+
                 break;
         }
 

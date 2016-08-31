@@ -16,11 +16,26 @@ import android.widget.TextView;
 import com.minji.librarys.R;
 import com.minji.librarys.base.BaseActivity;
 import com.minji.librarys.fragment.FragmentReadingRoom;
+import com.minji.librarys.http.OkHttpManger;
 import com.minji.librarys.uitls.ToastUtil;
 import com.minji.librarys.uitls.ViewsUitls;
 import com.minji.librarys.widget.wheel.ArrayWheelAdapter;
 import com.minji.librarys.widget.wheel.OnWheelChangedListener;
 import com.minji.librarys.widget.wheel.WheelView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class SelectAreasActivity extends BaseActivity implements View.OnClickListener {
 
@@ -34,7 +49,7 @@ public class SelectAreasActivity extends BaseActivity implements View.OnClickLis
             new String[]{"沈阳", "大连", "鞍山", "抚顺", "本溪", "丹东", "锦州", "营口", "阜新", "辽阳", "盘锦", "铁岭", "朝阳", "葫芦岛"},
             new String[]{"长春", "吉林", "四平", "辽源", "通化", "白山", "松原", "白城", "延边"},
             new String[]{"哈尔滨", "齐齐哈尔", "鸡西", "鹤岗", "双鸭山", "大庆", "伊春", "佳木斯", "七台河", "牡丹江", "黑河", "绥化", "大兴安岭"},
-            new String[]{"南京", "无锡", "徐州", "常州", "苏州", "南通", "连云港", "淮安", "盐城", "扬州", "镇江", "泰州", "宿迁"}};
+            new String[]{}};
 
 
     private TextView mSelectReadingRoomDialog;
@@ -69,6 +84,45 @@ public class SelectAreasActivity extends BaseActivity implements View.OnClickLis
             case R.id.tv_select_area_to_dialog_reading_room:
                 // TODO 请求网络获取选择的数据
                 showSelectReadingRoomDialog();
+
+                OkHttpClient okHttpClient = OkHttpManger.getInstance().getOkHttpClient();
+                RequestBody formBody = new FormBody.Builder().build();
+                Request request = new Request.Builder()
+                        .url("http://192.168.1.40:8080/library-seat/mobile/floorAndArea")
+                        .post(formBody)
+                        .build();
+                okHttpClient.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        System.out.println("=========================onFailure=============================");
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        final String result = response.body().string().toString();
+
+                        try {
+                            JSONArray arrParent = new JSONArray(result);
+                            for (int p = 0; p < arrParent.length(); p++) {
+                                JSONObject objParent = arrParent.optJSONObject(p);
+                                String floorName = objParent.optString("text");
+                                String floorId = objParent.optString("value");
+                                JSONArray arrChildren = objParent.optJSONArray("children");
+                                for (int c = 0; c < arrChildren.length(); c++) {
+                                    JSONObject objChildren = arrParent.optJSONObject(c);
+                                    String readingRoomName = objChildren.optString("text");
+                                    String readingRoomId = objChildren.optString("value");
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                });
+
+
                 break;
             case R.id.iv_title_select:
                 // TODO 请求网络获取选择的数据
