@@ -47,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
-            android:background="@drawable/shape_select_area_reading_room_seat_state"
+            android:background="@drawable/shape_select_area_reading_room_seat_state_free"
             android:gravity="center_horizontal"
             android:padding="3dp"
             android:text="预约成功"

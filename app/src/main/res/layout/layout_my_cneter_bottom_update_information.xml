@@ -58,9 +58,11 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="16dp"
             android:background="@drawable/shape_editext_bg_color_gray"
+            android:enabled="false"
             android:hint="189654545656"
             android:paddingLeft="15dp"
-            android:paddingRight="15dp" />
+            android:paddingRight="15dp"
+            android:textColor="@color/hint_color" />
 
     </LinearLayout>
 
@@ -81,9 +83,11 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="16dp"
             android:background="@drawable/shape_editext_bg_color_gray"
+            android:enabled="false"
             android:hint="189654545656@qq.com"
             android:paddingLeft="15dp"
-            android:paddingRight="15dp" />
+            android:paddingRight="15dp"
+            android:textColor="@color/hint_color" />
 
     </LinearLayout>
 
@@ -91,7 +95,7 @@
         android:id="@+id/bt_update_information_information_make_sure"
         style="@style/width_hight_mw"
         android:background="@drawable/selector_login_button"
-        android:text="信息确认"
+        android:text="修改资料"
         android:textColor="@color/white"
         android:textStyle="bold" />
 

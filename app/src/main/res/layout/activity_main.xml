@@ -91,7 +91,7 @@
             android:orientation="vertical">
 
             <com.minji.librarys.widget.MainItem
-                android:id="@+id/mi_main_stadium_seats"
+                android:id="@+id/mi_main_cancel_order"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"

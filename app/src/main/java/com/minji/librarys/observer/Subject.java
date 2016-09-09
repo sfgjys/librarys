@@ -11,8 +11,8 @@ public interface Subject {
 	public void del(Observers observer);
 
 	/* 通知所有的观察者 */
-	public void notifyObservers(int mPosition, int areaOrautonomously);
+	public void notifyObservers(int mPosition, int distinguishBeNotified, int cancelOrderBid);
 
 	/* 自身的操作 */
-	public void operation(int mPosition, int areaOrautonomously);
+	public void operation(int mPosition, int distinguishBeNotified, int cancelOrderBid);
 }

@@ -25,10 +25,10 @@ public abstract class AbstractSubject implements Subject {
 	}
 
 	@Override
-	public void notifyObservers(int mPosition,int areaOrautonomously) {
+	public void notifyObservers(int mPosition, int distinguishBeNotified, int cancelOrderBid) {
 		Enumeration<Observers> enumo = vector.elements();
 		while (enumo.hasMoreElements()) {
-			enumo.nextElement().update(mPosition,areaOrautonomously);
+			enumo.nextElement().update(mPosition,distinguishBeNotified, cancelOrderBid);
 		}
 	}
 

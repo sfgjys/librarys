@@ -19,14 +19,13 @@
             android:id="@+id/tv_select_area_top_middle"
             style="@style/select_area_top_textview"
             android:layout_centerInParent="true"
-            android:layout_marginLeft="7dp"
-            android:layout_marginRight="7dp"
-            android:drawableLeft="@mipmap/select_area_top_gray"
-            android:text="@string/select_area_top_appointment" />
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:drawableLeft="@mipmap/select_area_top_orange"
+            android:text="@string/select_area_top_no_use" />
 
         <TextView
             style="@style/select_area_top_textview"
-            android:layout_marginRight="7dp"
             android:layout_toLeftOf="@id/tv_select_area_top_middle"
             android:drawableLeft="@mipmap/select_area_top_green"
             android:text="@string/select_area_top_free" />
@@ -34,11 +33,9 @@
 
         <TextView
             style="@style/select_area_top_textview"
-            android:layout_marginLeft="7dp"
             android:layout_toRightOf="@id/tv_select_area_top_middle"
-            android:drawableLeft="@mipmap/select_area_top_orange"
+            android:drawableLeft="@mipmap/select_area_top_gray"
             android:text="@string/select_area_top_occupation" />
-
     </RelativeLayout>
 
     <FrameLayout

@@ -31,7 +31,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         view.findViewById(R.id.mi_main_booking_rules).setOnClickListener(this);
         view.findViewById(R.id.mi_main_me_center).setOnClickListener(this);
         view.findViewById(R.id.mi_main_serach_seat).setOnClickListener(this);
-        view.findViewById(R.id.mi_main_stadium_seats).setOnClickListener(this);
+        view.findViewById(R.id.mi_main_cancel_order).setOnClickListener(this);
         view.findViewById(R.id.mi_title_setting).setOnClickListener(this);
         TextView mTimeNumber = (TextView) view.findViewById(R.id.tv_main_item_tiem_number);
         mTimeNumber.setText(SystemTime.getTimer());
@@ -47,14 +47,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 skipToActivity(SelectAreasActivity.class, "选择阅览室");
                 break;
             case R.id.mi_main_me_center:
-                skipToActivity(MyCenterActivity.class, "个人中心");
+                skipToActivity(MyCentersActivity.class, "个人中心");
                 break;
             case R.id.mi_main_serach_seat:
                 skipToActivity(SerachSeatActivity.class,"查询座位");
                 break;
             case R.id.mi_main_booking_rules:
                 break;
-            case R.id.mi_main_stadium_seats:
+            case R.id.mi_main_cancel_order:
+                skipToActivity(CancelOrderActivity.class,"取消预约");
                 break;
             case R.id.mi_title_setting:
                 break;

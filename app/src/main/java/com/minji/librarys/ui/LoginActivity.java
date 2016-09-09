@@ -89,56 +89,63 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
                 String passWord = mEtPassWord.getText().toString().trim();
                 String cid = SharedPreferencesUtil.getString(this, StringsFiled.CLIENTID, "");
 
-                if (!StringUtils.isEmpty(userName) && !StringUtils.isEmpty(passWord) && !StringUtils.isEmpty(cid)) {
-                    System.out.println("userName: " + userName + "  passWord: " + passWord + "  cid: " + cid);
+                if (!StringUtils.isEmpty(cid)) {
 
-                    OkHttpClient okHttpClient = OkHttpManger.getInstance().getOkHttpClient();
-                    RequestBody formBody = new FormBody.Builder()
-                            .add("username", userName).add("password", passWord).add("cid", userName).add("rememberMe", "false")
-                            .build();
-                    Request request = new Request.Builder()
-                            .url("http://192.168.1.40:8080/library-seat/user/ajaxlogin")
-                            .post(formBody)
-                            .build();
-                    okHttpClient.newCall(request).enqueue(new Callback() {
-                        @Override
-                        public void onFailure(Call call, IOException e) {
-                            System.out.println("=========================onFailure=============================");
-                            ViewsUitls.runInMainThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ToastUtil.showToast(LoginActivity.this, "服务器正忙,请稍候");
-                                }
-                            });
-                        }
 
-                        @Override
-                        public void onResponse(Call call, Response response) throws IOException {
-                            final String result = response.body().string().toString();
-                            System.out.println(result + "      +++++++++++++++++++++++++++++++++");
-                            ViewsUitls.runInMainThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        JSONObject jsonObject = new JSONObject(result);
-                                        String message = jsonObject.optString("message");
-                                        if (result.contains("true")) {
-                                            Intent mainActivity = new Intent(ViewsUitls.getContext(), MainActivity.class);
-                                            startActivity(mainActivity);
-                                            finish();
-                                        }
-                                        ToastUtil.showToast(LoginActivity.this, message);
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
+                    if (!StringUtils.isEmpty(userName) && !StringUtils.isEmpty(passWord)) {
+                        System.out.println("userName: " + userName + "  passWord: " + passWord + "  cid: " + cid);
+
+                        OkHttpClient okHttpClient = OkHttpManger.getInstance().getOkHttpClient();
+                        RequestBody formBody = new FormBody.Builder()
+                                .add("username", userName).add("password", passWord).add("cid", userName).add("rememberMe", "false")
+                                .build();
+                        Request request = new Request.Builder()
+                                .url("http://192.168.1.40:8080/library-seat/user/ajaxlogin")
+                                .post(formBody)
+                                .build();
+                        okHttpClient.newCall(request).enqueue(new Callback() {
+                            @Override
+                            public void onFailure(Call call, IOException e) {
+                                System.out.println("=========================onFailure=============================");
+                                ViewsUitls.runInMainThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ToastUtil.showToast(LoginActivity.this, "服务器正忙,请稍候");
                                     }
-                                }
-                            });
+                                });
+                            }
 
-                        }
-                    });
+                            @Override
+                            public void onResponse(Call call, Response response) throws IOException {
+                                final String result = response.body().string().toString();
+                                System.out.println(result + "      +++++++++++++++++++++++++++++++++");
+                                ViewsUitls.runInMainThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            JSONObject jsonObject = new JSONObject(result);
+                                            String message = jsonObject.optString("message");
+                                            if (result.contains("true")) {
+                                                SharedPreferencesUtil.saveStirng(getApplicationContext(), StringsFiled.USERID, jsonObject.optString("userId"));
+                                                Intent mainActivity = new Intent(ViewsUitls.getContext(), MainActivity.class);
+                                                startActivity(mainActivity);
+                                                finish();
+                                            }
+                                            ToastUtil.showToast(LoginActivity.this, message);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
 
+                            }
+                        });
+
+                    } else {
+                        ToastUtil.showToast(this, "账户密码不可为空");
+                    }
                 } else {
-                    ToastUtil.showToast(this, "账户密码不可为空");
+                    ToastUtil.showToast(this, "id:0x000000");
                 }
 
                 break;

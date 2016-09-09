@@ -22,7 +22,7 @@
 
     </LinearLayout>
 
-    <ImageView
+    <!--<ImageView
         style="@style/my_cneter_middle_part_text_middle_image"
         android:src="@mipmap/my_center_middle_text_middle" />
 
@@ -36,7 +36,7 @@
         <TextView
             android:id="@+id/tv_my_center_middle_part_add_integral"
             style="@style/my_cneter_middle_part_child_bottom_text_style"
-            android:text="---" />
+            android:text="-&#45;&#45;" />
 
     </LinearLayout>
 
@@ -54,8 +54,8 @@
         <TextView
             android:id="@+id/tv_my_center_middle_part_reduce_integral"
             style="@style/my_cneter_middle_part_child_bottom_text_style"
-            android:text="---" />
+            android:text="-&#45;&#45;" />
 
-    </LinearLayout>
+    </LinearLayout>-->
 
 </LinearLayout>

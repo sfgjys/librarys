@@ -27,9 +27,9 @@ public class MySubject extends AbstractSubject {
 	 * operation方法只是用于自身这个类
 	 * */
 	@Override
-	public void operation(int mPosition, int areaOrautonomously) {
+	public void operation(int mPosition, int distinguishBeNotified, int cancelOrderBid) {
 		System.out.println("update self!");
-		notifyObservers(mPosition,areaOrautonomously);
+		notifyObservers(mPosition,distinguishBeNotified, cancelOrderBid);
 	}
 
 }

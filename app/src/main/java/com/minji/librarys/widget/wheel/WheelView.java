@@ -22,6 +22,7 @@ import android.view.animation.Interpolator;
 import android.widget.Scroller;
 
 import com.minji.librarys.R;
+import com.minji.librarys.uitls.ViewsUitls;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -70,7 +71,7 @@ public class WheelView extends View {
      * 字体大小
      */
     // TODO 字体大小
-    private static final int TEXT_SIZE = 24;
+    private static final int TEXT_SIZE = 13;
 
     /**
      * 顶部 和 底部 条目的隐藏大小, 如果是正数 会隐藏一部份, 0 顶部 和 底部的字正好紧贴 边缘, 负数时 顶部和底部 与 字有一定间距
@@ -495,7 +496,7 @@ public class WheelView extends View {
         if (itemsPaint == null) {
             itemsPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG
                     | Paint.FAKE_BOLD_TEXT_FLAG);
-            itemsPaint.setTextSize(TEXT_SIZE);
+            itemsPaint.setTextSize(ViewsUitls.dptopx(TEXT_SIZE));
         }
 
 		/*
@@ -504,7 +505,7 @@ public class WheelView extends View {
         if (valuePaint == null) {
             valuePaint = new TextPaint(Paint.ANTI_ALIAS_FLAG
                     | Paint.FAKE_BOLD_TEXT_FLAG | Paint.DITHER_FLAG);
-            valuePaint.setTextSize(TEXT_SIZE);
+            valuePaint.setTextSize(ViewsUitls.dptopx(TEXT_SIZE));
             valuePaint.setShadowLayer(0.1f, 0, 0.1f, 0xFFC0C0C0);
         }
 

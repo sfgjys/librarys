@@ -15,10 +15,11 @@
         android:paddingTop="6dp">
 
         <TextView
+            android:id="@+id/tv_dialog_top_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="当前预约位置"
+            android:text="预约提示!"
             android:textColor="@color/white"
             android:textSize="23dp" />
 
@@ -41,24 +42,19 @@
 
         <TextView
             android:id="@+id/tv_order_seat_dialog_people"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="预约人 : 少正解"
-            android:textColor="@color/black" />
-
-        <TextView
-            android:id="@+id/tv_order_seat_dialog_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="9dp"
-            android:text="学好 : 0154156146"
-            android:textColor="@color/black" />
+            android:gravity="center"
+            android:text="您确认要预约/用座[1-东阅览室-010014]位置吗?"
+            android:textColor="@color/black"
+            android:textSize="20dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -95,7 +91,7 @@
                 android:background="@color/thin_gray"
                 android:gravity="center"
                 android:padding="6dp"
-                android:text="取消预约"
+                android:text="再看看"
                 android:textColor="@color/white"
                 android:textSize="18dp" />
 
