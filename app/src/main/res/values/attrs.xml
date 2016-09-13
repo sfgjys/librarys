@@ -37,4 +37,11 @@
         </attr>
     </declare-styleable>
 
+    <!-- Tab导航栏的自定义属性 -->
+    <declare-styleable name="PagerSlidingTabStrip">
+        <attr name="slidingBlock" format="reference|color" />
+        <attr name="allowWidthFull" format="boolean" />
+        <attr name="disableViewPager" format="boolean" />
+    </declare-styleable>
+
 </resources>

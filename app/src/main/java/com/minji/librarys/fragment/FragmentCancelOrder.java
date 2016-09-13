@@ -17,7 +17,7 @@ import com.minji.librarys.StringsFiled;
 import com.minji.librarys.adapter.CancelOrderAdapter;
 import com.minji.librarys.base.BaseFragment;
 import com.minji.librarys.base.ContentPage;
-import com.minji.librarys.bean.CancelOrderDetails;
+import com.minji.librarys.bean.CancelOrderDetail;
 import com.minji.librarys.http.OkHttpManger;
 import com.minji.librarys.observer.Observers;
 import com.minji.librarys.uitls.SharedPreferencesUtil;
@@ -42,10 +42,10 @@ import okhttp3.Response;
 /**
  * Created by user on 2016/9/9.
  */
-public class FragmentCancelOrder extends BaseFragment<CancelOrderDetails> implements Observers {
+public class FragmentCancelOrder extends BaseFragment<CancelOrderDetail> implements Observers {
 
     private String mResultString;
-    private List<CancelOrderDetails> cancelOrderList;
+    private List<CancelOrderDetail> cancelOrderList;
     private CancelOrderAdapter cancelOrderAdapter;
     private String mUserId;
     private int mCancelOrderBid;
@@ -60,8 +60,8 @@ public class FragmentCancelOrder extends BaseFragment<CancelOrderDetails> implem
     @Override
     protected View onCreateSuccessView() {
 
-        View view = ViewsUitls.inflate(R.layout.layout_cancel_order_list);
-        ListView listView = (ListView) view.findViewById(R.id.lv_cancel_order_list);
+        View view = ViewsUitls.inflate(R.layout.layout_normal_list);
+        ListView listView = (ListView) view.findViewById(R.id.lv_normal_list);
 
 
         cancelOrderAdapter = new CancelOrderAdapter(cancelOrderList);
@@ -110,8 +110,9 @@ public class FragmentCancelOrder extends BaseFragment<CancelOrderDetails> implem
             cancelOrderList = null;
             cancelOrderList = new ArrayList<>();
             if (!object.optString("message").equals("无可用的信息")) {
-                cancelOrderList.add(new CancelOrderDetails(object.optString("name"), object.optInt("bid"), object.optString("time")));
+                cancelOrderList.add(new CancelOrderDetail(object.optString("name"), object.optInt("bid"), object.optString("time"), object.optString("status")));
             }
+            System.out.println();
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -149,7 +150,7 @@ public class FragmentCancelOrder extends BaseFragment<CancelOrderDetails> implem
         TextView dialogTitle = (TextView) window.findViewById(R.id.tv_dialog_top_title);
         dialogTitle.setText("操作提示");
         TextView dialogContetn = (TextView) window.findViewById(R.id.tv_order_seat_dialog_people);
-        dialogContetn.setText("您确认要取消预约吗？");
+        dialogContetn.setText("您确认要取消吗？");
 
         window.findViewById(R.id.iv_order_seat_dialog_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,7 +204,7 @@ public class FragmentCancelOrder extends BaseFragment<CancelOrderDetails> implem
                                 cancelOrderAdapter.notifyDataSetChanged();
                                 alertDialog.cancel();
                             } else {// 取消失败
-                                ToastUtil.showToast(ViewsUitls.getContext(), "取消预约失败");
+                                ToastUtil.showToast(ViewsUitls.getContext(), "取消失败");
                             }
                         }
                     });

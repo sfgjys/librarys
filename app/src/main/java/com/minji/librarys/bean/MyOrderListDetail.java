@@ -3,13 +3,13 @@ package com.minji.librarys.bean;
 /**
  * Created by user on 2016/9/9.
  */
-public class MyOrderListDetails {
+public class MyOrderListDetail {
 
     private String orderPlaceName;
     private String orderTime;
     private String orderStatus;
 
-    public MyOrderListDetails(String orderPlaceName, String orderTime, String orderStatus) {
+    public MyOrderListDetail(String orderPlaceName, String orderTime, String orderStatus) {
         this.orderPlaceName = orderPlaceName;
         this.orderTime = orderTime;
         this.orderStatus = orderStatus;

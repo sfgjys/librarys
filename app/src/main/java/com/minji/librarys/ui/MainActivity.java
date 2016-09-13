@@ -10,7 +10,15 @@ import com.minji.librarys.base.BaseActivity;
 import com.minji.librarys.uitls.SystemTime;
 import com.minji.librarys.uitls.ViewsUitls;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class MainActivity extends BaseActivity implements View.OnClickListener {
+
+    private TextView mTimeNumber;
+    private TextView mWeek;
+    private Timer timer;
+    private TimerTask timerTask;
 
     @Override
     public void onCreateContent() {
@@ -33,10 +41,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         view.findViewById(R.id.mi_main_serach_seat).setOnClickListener(this);
         view.findViewById(R.id.mi_main_cancel_order).setOnClickListener(this);
         view.findViewById(R.id.mi_title_setting).setOnClickListener(this);
-        TextView mTimeNumber = (TextView) view.findViewById(R.id.tv_main_item_tiem_number);
+
+        mTimeNumber = (TextView) view.findViewById(R.id.tv_main_item_tiem_number);
         mTimeNumber.setText(SystemTime.getTimer());
-        TextView mWeek = (TextView) view.findViewById(R.id.tv_main_item_tiem_week);
+        mWeek = (TextView) view.findViewById(R.id.tv_main_item_tiem_week);
         mWeek.setText(SystemTime.getTimerWeek());
+
+
     }
 
     @Override
@@ -50,12 +61,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 skipToActivity(MyCentersActivity.class, "个人中心");
                 break;
             case R.id.mi_main_serach_seat:
-                skipToActivity(SerachSeatActivity.class,"查询座位");
+                skipToActivity(SearchSeatActivity.class, "查询座位");
                 break;
             case R.id.mi_main_booking_rules:
                 break;
             case R.id.mi_main_cancel_order:
-                skipToActivity(CancelOrderActivity.class,"取消预约");
+                skipToActivity(CancelOrderActivity.class, "取消预约");
                 break;
             case R.id.mi_title_setting:
                 break;
@@ -67,5 +78,41 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         Intent intent = new Intent(ViewsUitls.getContext(), cls);
         intent.putExtra(StringsFiled.ACTIVITY_TITLE, title);
         startActivity(intent);
+    }
+
+
+    @Override
+    protected void onStop() {
+        stopTimer();
+        super.onStop();
+    }
+
+    private void stopTimer() {
+        if (timer != null) {
+            timer.cancel();
+        }
+        timer = null;
+        timerTask = null;
+    }
+
+    @Override
+    protected void onStart() {
+        // TODO 开启计时器前先判断是否要显示时间
+        timer = new Timer();
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                ViewsUitls.runInMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        System.out.println("更新时间");
+                        mTimeNumber.setText(SystemTime.getTimer());
+                        mWeek.setText(SystemTime.getTimerWeek());
+                    }
+                });
+            }
+        };
+        timer.schedule(timerTask, 0, 45000);
+        super.onStart();
     }
 }

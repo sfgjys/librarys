@@ -2,7 +2,7 @@ package com.minji.librarys.adapter;
 
 import com.minji.librarys.base.BaseHolder;
 import com.minji.librarys.base.MyBaseAdapter;
-import com.minji.librarys.bean.CancelOrderDetails;
+import com.minji.librarys.bean.CancelOrderDetail;
 import com.minji.librarys.holder.CancelOrderHolder;
 
 import java.util.List;
@@ -10,19 +10,19 @@ import java.util.List;
 /**
  * Created by user on 2016/9/9.
  */
-public class CancelOrderAdapter extends MyBaseAdapter<CancelOrderDetails> {
+public class CancelOrderAdapter extends MyBaseAdapter<CancelOrderDetail> {
 
-    public CancelOrderAdapter(List<CancelOrderDetails> list) {
+    public CancelOrderAdapter(List<CancelOrderDetail> list) {
         super(list);
     }
 
     @Override
-    public BaseHolder<CancelOrderDetails> getHolder() {
+    public BaseHolder<CancelOrderDetail> getHolder() {
         return new CancelOrderHolder();
     }
 
     @Override
-    public List<CancelOrderDetails> onLoadMore() {
+    public List<CancelOrderDetail> onLoadMore() {
         return null;
     }
 

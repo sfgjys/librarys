@@ -6,14 +6,14 @@ import android.widget.TextView;
 import com.minji.librarys.ObserverTag;
 import com.minji.librarys.R;
 import com.minji.librarys.base.BaseHolder;
-import com.minji.librarys.bean.CancelOrderDetails;
+import com.minji.librarys.bean.CancelOrderDetail;
 import com.minji.librarys.observer.MySubject;
 import com.minji.librarys.uitls.ViewsUitls;
 
 /**
  * Created by user on 2016/9/9.
  */
-public class CancelOrderHolder extends BaseHolder<CancelOrderDetails> {
+public class CancelOrderHolder extends BaseHolder<CancelOrderDetail> {
 
     private TextView mOrderPlace;
     private TextView mOrderTime;
@@ -31,15 +31,16 @@ public class CancelOrderHolder extends BaseHolder<CancelOrderDetails> {
     }
 
     @Override
-    public void setRelfshData(final CancelOrderDetails mData, final int postion) {
+    public void setRelfshData(final CancelOrderDetail mData, final int postion) {
         mOrderPlace.setText(mData.getOrderPlaceName());
         mOrderTime.setText(mData.getOrderTime());
 
+        mCancelButton.setText(mData.getStatus());
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int cancelOrderBid = mData.getBid();
-                MySubject.getInstance().operation(postion, ObserverTag.ItemCancelOrderButton,cancelOrderBid);
+                MySubject.getInstance().operation(postion, ObserverTag.ItemCancelOrderButton, cancelOrderBid);
             }
         });
 

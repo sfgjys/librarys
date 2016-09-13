@@ -5,13 +5,13 @@ import android.widget.TextView;
 
 import com.minji.librarys.R;
 import com.minji.librarys.base.BaseHolder;
-import com.minji.librarys.bean.MyOrderListDetails;
+import com.minji.librarys.bean.MyOrderListDetail;
 import com.minji.librarys.uitls.ViewsUitls;
 
 /**
  * Created by user on 2016/9/9.
  */
-public class MyOrderListHolder extends BaseHolder<MyOrderListDetails> {
+public class MyOrderListHolder extends BaseHolder<MyOrderListDetail> {
     private TextView mOrderPlace;
     private TextView mOrderTime;
     private TextView mOrderStatus;
@@ -28,7 +28,7 @@ public class MyOrderListHolder extends BaseHolder<MyOrderListDetails> {
     }
 
     @Override
-    public void setRelfshData(MyOrderListDetails mData, int postion) {
+    public void setRelfshData(MyOrderListDetail mData, int postion) {
 
         mOrderPlace.setText(mData.getOrderPlaceName());
         mOrderTime.setText(mData.getOrderTime());

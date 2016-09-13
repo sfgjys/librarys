@@ -6,10 +6,10 @@ import android.widget.ListView;
 
 import com.minji.librarys.R;
 import com.minji.librarys.StringsFiled;
-import com.minji.librarys.adapter.MyOrderListAdapter;
+import com.minji.librarys.adapter.TodayIntegralAdapter;
 import com.minji.librarys.base.BaseFragment;
 import com.minji.librarys.base.ContentPage;
-import com.minji.librarys.bean.MyOrderListDetail;
+import com.minji.librarys.bean.TodayIntegralDetail;
 import com.minji.librarys.http.OkHttpManger;
 import com.minji.librarys.uitls.SharedPreferencesUtil;
 import com.minji.librarys.uitls.ViewsUitls;
@@ -29,12 +29,12 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * Created by user on 2016/8/29.
+ * Created by user on 2016/9/12.
  */
-public class FragmentMyOrder extends BaseFragment<MyOrderListDetail> {
+public class FragmentTodayIntegral extends BaseFragment<TodayIntegralDetail> {
 
     private String mResultString;
-    private List<MyOrderListDetail> myOrderLists;
+    private List<TodayIntegralDetail> todayIntegralDetails;
 
     @Override
     protected void onSubClassOnCreateView() {
@@ -47,8 +47,10 @@ public class FragmentMyOrder extends BaseFragment<MyOrderListDetail> {
         View view = ViewsUitls.inflate(R.layout.layout_normal_list);
         ListView listView = (ListView) view.findViewById(R.id.lv_normal_list);
 
-        MyOrderListAdapter myOrderListAdapter = new MyOrderListAdapter(myOrderLists);
-        listView.setAdapter(myOrderListAdapter);
+        TodayIntegralAdapter todayIntegralAdapter = new TodayIntegralAdapter(todayIntegralDetails);
+
+        listView.setAdapter(todayIntegralAdapter);
+
 
         return view;
     }
@@ -60,7 +62,7 @@ public class FragmentMyOrder extends BaseFragment<MyOrderListDetail> {
         RequestBody formBody = new FormBody.Builder()
                 .add("userid", mUserId).build();
         Request request = new Request.Builder()
-                .url("http://192.168.1.40:8080/library-seat/mobile/myBespeakInfo")
+                .url("http://192.168.1.40:8080/library-seat/mobile/userPointDayInfo")
                 .post(formBody)
                 .build();
         try {
@@ -73,25 +75,26 @@ public class FragmentMyOrder extends BaseFragment<MyOrderListDetail> {
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("=========================onFailure=============================");
-            Log.i("asdfgh", "okHttp is request error");
-            myOrderLists = null;
+            Log.i("失败", "okHttp is request error");
+            todayIntegralDetails = null;
         }
-
-
-        return chat(myOrderLists);
+        return chat(todayIntegralDetails);
     }
 
     private void analysisJsonDate() {
         try {
             JSONObject object = new JSONObject(mResultString);
-            myOrderLists = new ArrayList<>();
-            if (object.has("maps")) {
-                JSONArray maps = object.optJSONArray("maps");
-                for (int i = 0; i < maps.length(); i++) {
-                    JSONObject jsonObject = maps.optJSONObject(i);
-                    myOrderLists.add(new MyOrderListDetail(jsonObject.optString("name"), jsonObject.optString("time"), jsonObject.optString("status")));
+
+            todayIntegralDetails = new ArrayList<>();
+            if (object.has("userPointDayInfoList")) {
+                JSONArray jsonArray = object.optJSONArray("userPointDayInfoList");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.optJSONObject(i);
+                    JSONObject getTime = jsonObject.optJSONObject("getTime");
+                    todayIntegralDetails.add(new TodayIntegralDetail(jsonObject.optString("pointSource"), jsonObject.optInt("getPoint"), getTime.optLong("time")));
                 }
             }
+            System.out.println();
         } catch (JSONException e) {
             e.printStackTrace();
         }

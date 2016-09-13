@@ -10,7 +10,7 @@ import com.minji.librarys.base.BaseActivity;
 /**
  * Created by user on 2016/8/25.
  */
-public class SerachSeatActivity extends BaseActivity {
+public class SearchSeatActivity extends BaseActivity {
 
 
     String[] strings = {"654-ASD", "654-ASD", "654-ASD", "654-ASD", "654-ASD", "654-ASD", "654-ASD", "654-ASD", "654-ASD",};
