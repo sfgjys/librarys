@@ -56,11 +56,29 @@
     </RelativeLayout>
 
     <FrameLayout
-        android:id="@+id/fl_base_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.minji.librarys.widget.MyFrameLayout
+            android:id="@+id/fl_base_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></com.minji.librarys.widget.MyFrameLayout>
+
+        <FrameLayout
+            android:id="@+id/fl_loading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/loading_background_thin_gray"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminateDrawable="@drawable/loading_big" />
+
+        </FrameLayout>
+
+
     </FrameLayout>
-
-
 </LinearLayout>

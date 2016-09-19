@@ -149,4 +149,29 @@
         <item name="android:textSize">17sp</item>
     </style>
 
+    <style name="search_seat_result_ll_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">3dp</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="search_seat_result_left_text_style">
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1.4</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">18dp</item>
+    </style>
+
+    <style name="search_seat_result_right_text_style">
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">3</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/thin_green</item>
+        <item name="android:textSize">18dp</item>
+    </style>
+
 </resources>

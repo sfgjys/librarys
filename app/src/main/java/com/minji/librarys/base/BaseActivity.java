@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.minji.librarys.R;
 import com.minji.librarys.StringsFiled;
 import com.minji.librarys.uitls.StringUtils;
+import com.minji.librarys.widget.MyFrameLayout;
 
 public abstract class BaseActivity extends FragmentActivity {
 
@@ -21,9 +22,10 @@ public abstract class BaseActivity extends FragmentActivity {
 
     private TextView mBaseTitle;
 
-    private FrameLayout mBaseContetn;
+    private MyFrameLayout mBaseContetn;
     public Bundle savedInstanceState;
     public String stringTitle;
+    private FrameLayout mBaseLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +59,7 @@ public abstract class BaseActivity extends FragmentActivity {
         mBaseSelect = (ImageView) findViewById(R.id.iv_title_select);
         mBaseSetting = (ImageView) findViewById(R.id.iv_title_setting);
         mBaseTitle = (TextView) findViewById(R.id.tv_base_title);
-        mBaseContetn = (FrameLayout) findViewById(R.id.fl_base_content);
+        mBaseContetn = (MyFrameLayout) findViewById(R.id.fl_base_content);
 
         mBaseBack = (ImageView) findViewById(R.id.iv_title_back);
         mBaseBack.setOnClickListener(new View.OnClickListener() {
@@ -66,6 +68,16 @@ public abstract class BaseActivity extends FragmentActivity {
                 finish();
             }
         });
+
+        mBaseLoading = (FrameLayout) findViewById(R.id.fl_loading);
+    }
+
+    public void setLoadingVisibility(int visibility) {
+        mBaseLoading.setVisibility(visibility);
+    }
+
+    public void setIsInterruptTouch(boolean is) {
+        mBaseContetn.setIsInterruptTouch(is);
     }
 
     public void setBackVisibility(int visibility) {

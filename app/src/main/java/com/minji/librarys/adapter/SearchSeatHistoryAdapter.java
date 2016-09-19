@@ -7,23 +7,26 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.minji.librarys.R;
+import com.minji.librarys.bean.SearchHistory;
 import com.minji.librarys.uitls.ViewsUitls;
+
+import java.util.List;
 
 /**
  * Created by user on 2016/8/26.
  */
-public class SerachSeatHistoryAdapter extends BaseAdapter {
+public class SearchSeatHistoryAdapter extends BaseAdapter {
 
 
-    private final String[] date;
+    private final List<SearchHistory> date;
 
-    public SerachSeatHistoryAdapter(String[] date) {
+    public SearchSeatHistoryAdapter(List<SearchHistory> date) {
         this.date = date;
     }
 
     @Override
     public int getCount() {
-        return date.length;
+        return date.size();
     }
 
     @Override
@@ -42,7 +45,7 @@ public class SerachSeatHistoryAdapter extends BaseAdapter {
         TextView textView = new TextView(ViewsUitls.getContext());
         textView.setTextColor(ContextCompat.getColor(ViewsUitls.getContext(), R.color.black));
         textView.setPadding(ViewsUitls.dptopx(0), ViewsUitls.dptopx(6), ViewsUitls.dptopx(6), ViewsUitls.dptopx(6));
-        textView.setText(date[position]);
+        textView.setText(date.get(position).getSearchSeat());
 
         return textView;
     }
