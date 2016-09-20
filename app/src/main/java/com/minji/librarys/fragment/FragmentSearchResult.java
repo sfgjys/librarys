@@ -10,6 +10,10 @@ import android.widget.TextView;
 
 import com.minji.librarys.R;
 import com.minji.librarys.StringsFiled;
+import com.minji.librarys.uitls.SharedPreferencesUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by user on 2016/9/19.
@@ -17,24 +21,11 @@ import com.minji.librarys.StringsFiled;
 public class FragmentSearchResult extends Fragment {
 
 
-    private String mTime;
-    private String mUserName;
-    private String mStates;
-    private String mMobile;
-    private String mSeatNumber;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        Bundle bundle = getArguments();
-        mTime = bundle.getString(StringsFiled.SEARCH_RESULT_TIME);
-        mUserName = bundle.getString(StringsFiled.SEARCH_RESULT_USERNAME);
-        mStates = bundle.getString(StringsFiled.SEARCH_RESULT_STATES);
-        mMobile = bundle.getString(StringsFiled.SEARCH_RESULT_MOBILE);
-        mSeatNumber = bundle.getString(StringsFiled.SEARCH_RESULT_SEAT_NUMBER);
-
-    }
+    private TextView mobile;
+    private TextView time;
+    private TextView seatNumber;
+    private TextView states;
+    private TextView userName;
 
     @Nullable
     @Override
@@ -42,17 +33,42 @@ public class FragmentSearchResult extends Fragment {
 
         View view = inflater.inflate(R.layout.layout_search_seat_result, null);
 
-        TextView mobile = (TextView) view.findViewById(R.id.tv_search_seat_result_right_mobile);
-        mobile.setText(mMobile);
-        TextView time = (TextView) view.findViewById(R.id.tv_search_seat_result_right_time);
-        time.setText(mTime);
-        TextView seatNumber = (TextView) view.findViewById(R.id.tv_search_seat_result_right_seat_number);
-        seatNumber.setText(mSeatNumber);
-        TextView states = (TextView) view.findViewById(R.id.tv_search_seat_result_right_states);
-        states.setText(mStates);
-        TextView userName = (TextView) view.findViewById(R.id.tv_search_seat_result_right_user_name);
-        userName.setText(mUserName);
+
+        mobile = (TextView) view.findViewById(R.id.tv_search_seat_result_right_mobile);
+        time = (TextView) view.findViewById(R.id.tv_search_seat_result_right_time);
+        seatNumber = (TextView) view.findViewById(R.id.tv_search_seat_result_right_seat_number);
+        states = (TextView) view.findViewById(R.id.tv_search_seat_result_right_states);
+        userName = (TextView) view.findViewById(R.id.tv_search_seat_result_right_user_name);
+
+        getSearchResultAndSetDate();
 
         return view;
     }
+
+    private void getSearchResultAndSetDate() {
+        String result = SharedPreferencesUtil.getString(getActivity(), StringsFiled.SEARCH_JSON_RESULT, "");
+        String seatNumbers = SharedPreferencesUtil.getString(getActivity(), StringsFiled.SEARCH_RESULT_SEAT_NUMBER, "");
+        try {
+            JSONObject object = new JSONObject(result);
+            JSONObject message = object.optJSONObject("message");
+            mobile.setText(message.optString("mobile"));
+            time.setText(message.optString("time"));
+            seatNumber.setText(seatNumbers);
+            states.setText(message.optString("states"));
+            userName.setText(message.optString("username"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*当hidden为true时说明本Fragment被隐藏,当为false时说明本Fragment显示了*/
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+
+        if (!hidden) {
+            getSearchResultAndSetDate();
+        }
+    }
+
 }

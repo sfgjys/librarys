@@ -35,10 +35,8 @@ public class StringsFiled {
 
     public final static String SEARCH_HISTORY = "search_history";
 
-    public final static String SEARCH_RESULT_TIME = "search_result_time";
+    public final static String SEARCH_JSON_RESULT = "search_json_result";
+
     public final static String SEARCH_RESULT_SEAT_NUMBER = "search_result_seat_number";
-    public final static String SEARCH_RESULT_USERNAME = "search_result_username";
-    public final static String SEARCH_RESULT_STATES = "search_result_states";
-    public final static String SEARCH_RESULT_MOBILE = "search_result_mobile";
 
 }

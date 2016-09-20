@@ -33,6 +33,8 @@ public class FragmentSearchHistory extends Fragment {
     private SearchSeatHistoryAdapter searchSeatHistoryAdapter;
     private SearchSeatActivity searchSeatActivity;
 
+    private List<SearchHistory> mSearchHistories;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -42,35 +44,69 @@ public class FragmentSearchHistory extends Fragment {
 
         GridView mShowHistory = (GridView) inflate.findViewById(R.id.gv_search_seat_history);
 
-        String searchHistory = SharedPreferencesUtil.getString(getActivity(), StringsFiled.SEARCH_HISTORY, "");
-        if (!StringUtils.isEmpty(searchHistory)) {
-            List<SearchHistory> searchHistories = analysisGSONDate(searchHistory);
-            searchSeatHistoryAdapter = new SearchSeatHistoryAdapter(searchHistories);
-            mShowHistory.setAdapter(searchSeatHistoryAdapter);
-        }
+        // 获取数据并显示到GridView
+        getSearchHistory();
+
+        searchSeatHistoryAdapter = new SearchSeatHistoryAdapter(mSearchHistories);
+        mShowHistory.setAdapter(searchSeatHistoryAdapter);
 
         mShowHistory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 TextView textView = (TextView) view;
+                searchSeatActivity.getInputSearchSeat().setText(textView.getText().toString().trim());
                 searchSeatActivity.requestSearchSeat(textView.getText().toString().trim());
             }
         });
+
+
+        TextView cleanHistory = (TextView) inflate.findViewById(R.id.tv_search_seat_bottom_history_clean_all);
+        cleanHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferencesUtil.saveStirng(getActivity(), StringsFiled.SEARCH_HISTORY, "");
+                searchSeatActivity.hideSearchHistory();
+            }
+        });
+
         return inflate;
     }
 
-    private List<SearchHistory> analysisGSONDate(String searchHistory) {
-        List<SearchHistory> middleList = new ArrayList<>();
+    private void getSearchHistory() {
+        String searchHistory = SharedPreferencesUtil.getString(getActivity(), StringsFiled.SEARCH_HISTORY, "");
+        if (!StringUtils.isEmpty(searchHistory)) {
+            analysisGSONDate(searchHistory);
+        }
+    }
+
+    /*当hidden为true时说明本Fragment被隐藏,当为false时说明本Fragment显示了*/
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+
+            getSearchHistory();
+
+            if (mSearchHistories != null && searchSeatHistoryAdapter != null) {
+                searchSeatHistoryAdapter.notifyDataSetChanged();// TODO 在更新adapter时数据只能添加删除不能整个数据换成另一个实例数据
+            }
+        }
+    }
+
+    private void analysisGSONDate(String searchHistory) {
+        if (mSearchHistories == null) {
+            mSearchHistories = new ArrayList<>();
+        }
         try {
             JSONArray jsonArray = new JSONArray(searchHistory);
+            mSearchHistories.clear();
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject object = jsonArray.optJSONObject(i);
-                middleList.add(new SearchHistory(object.optString("searchSeat")));
+                mSearchHistories.add(new SearchHistory(object.optString("searchSeat")));
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return middleList;
     }
 }
