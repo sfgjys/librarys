@@ -4,6 +4,8 @@ import android.support.v4.app.Fragment;
 
 import com.minji.librarys.base.BaseFragment;
 import com.minji.librarys.fragment.FragmentHistoryIntegral;
+import com.minji.librarys.fragment.FragmentInLibraryStatistics;
+import com.minji.librarys.fragment.FragmentOccupancyStatistics;
 import com.minji.librarys.fragment.FragmentTodayIntegral;
 
 
@@ -21,6 +23,15 @@ public class FragmentFactory {
                     break;
                 case 1:
                     fragment = new FragmentHistoryIntegral();
+                    break;
+            }
+        } else if ("StatementDetail".equals(differentiate)) {
+            switch (position) {
+                case 0:
+                    fragment = new FragmentInLibraryStatistics();
+                    break;
+                case 1:
+                    fragment = new FragmentOccupancyStatistics();
                     break;
             }
         }

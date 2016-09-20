@@ -82,6 +82,17 @@
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
+            <com.minji.librarys.widget.MainItem
+                android:id="@+id/mi_main_statement_statistics"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:visibility="gone"
+                mainitem:itemChinese="@string/main_chinese_statement_statistics"
+                mainitem:itemEnglish="@string/main_english_statement_statistics"
+                mainitem:itemmainbackground="@drawable/selector_main_statistics_report"
+                mainitem:itmeIamge="@mipmap/main_statement_statistics" />
+
         </LinearLayout>
 
         <LinearLayout

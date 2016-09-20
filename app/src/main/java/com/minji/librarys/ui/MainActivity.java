@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.minji.librarys.R;
 import com.minji.librarys.StringsFiled;
 import com.minji.librarys.base.BaseActivity;
+import com.minji.librarys.uitls.SharedPreferencesUtil;
 import com.minji.librarys.uitls.SystemTime;
 import com.minji.librarys.uitls.ViewsUitls;
 
@@ -19,6 +20,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private TextView mWeek;
     private Timer timer;
     private TimerTask timerTask;
+    private int mRoleId;
 
     @Override
     public void onCreateContent() {
@@ -27,6 +29,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         setSettingVisibility(View.GONE);
         setTitleVisibility(View.GONE);
         setTitleImageVisibility(View.VISIBLE);
+
+        mRoleId = SharedPreferencesUtil.getint(getApplicationContext(), StringsFiled.ROLEID, -1);
 
         View view = setContent(R.layout.activity_main);
 
@@ -42,11 +46,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         view.findViewById(R.id.mi_main_cancel_order).setOnClickListener(this);
         view.findViewById(R.id.mi_title_setting).setOnClickListener(this);
 
+        showRunTimeOrStatementStatistics(view);
+
         mTimeNumber = (TextView) view.findViewById(R.id.tv_main_item_tiem_number);
         mTimeNumber.setText(SystemTime.getTimer());
         mWeek = (TextView) view.findViewById(R.id.tv_main_item_tiem_week);
         mWeek.setText(SystemTime.getTimerWeek());
 
+
+    }
+
+    private void showRunTimeOrStatementStatistics(View view) {
+        View runTime = view.findViewById(R.id.ll_main_run_time);
+        View statementStatistics = view.findViewById(R.id.mi_main_statement_statistics);
+        statementStatistics.setOnClickListener(this);
+        if (mRoleId == 1) {
+            runTime.setVisibility(View.GONE);
+            statementStatistics.setVisibility(View.VISIBLE);
+        }
 
     }
 
@@ -69,6 +86,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 skipToActivity(CancelOrderActivity.class, "取消预约");
                 break;
             case R.id.mi_title_setting:
+                break;
+            case R.id.mi_main_statement_statistics:
+                skipToActivity(IntegralAndOrderOrStatementActivity.class, "报表统计");
                 break;
         }
 
@@ -98,21 +118,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onStart() {
         // TODO 开启计时器前先判断是否要显示时间
-        timer = new Timer();
-        timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                ViewsUitls.runInMainThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        System.out.println("更新时间");
-                        mTimeNumber.setText(SystemTime.getTimer());
-                        mWeek.setText(SystemTime.getTimerWeek());
-                    }
-                });
-            }
-        };
-        timer.schedule(timerTask, 0, 45000);
+        if (mRoleId == 2) {
+            timer = new Timer();
+            timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    ViewsUitls.runInMainThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            System.out.println("更新时间");
+                            mTimeNumber.setText(SystemTime.getTimer());
+                            mWeek.setText(SystemTime.getTimerWeek());
+                        }
+                    });
+                }
+            };
+            timer.schedule(timerTask, 0, 45000);
+        }
         super.onStart();
     }
 }

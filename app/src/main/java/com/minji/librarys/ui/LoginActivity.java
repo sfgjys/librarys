@@ -49,7 +49,7 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
         setContentView(R.layout.layout_login);
 
         SharedPreferencesUtil.saveStirng(this, StringsFiled.CLIENTID, "");
-        System.out.println("===================");
+        // TODO 初始化推送
         PushManager.getInstance().initialize(this.getApplicationContext());
 
         initView();
@@ -126,6 +126,7 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
                                             JSONObject jsonObject = new JSONObject(result);
                                             String message = jsonObject.optString("message");
                                             if (result.contains("true")) {
+                                                SharedPreferencesUtil.saveint(getApplicationContext(), StringsFiled.ROLEID, jsonObject.optInt("roleId"));
                                                 SharedPreferencesUtil.saveStirng(getApplicationContext(), StringsFiled.USERID, jsonObject.optString("userId"));
                                                 Intent mainActivity = new Intent(ViewsUitls.getContext(), MainActivity.class);
                                                 startActivity(mainActivity);

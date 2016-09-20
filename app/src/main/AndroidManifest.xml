@@ -35,7 +35,7 @@
         <activity android:name=".ui.SelectAreasActivity" />
         <activity android:name=".ui.MyCentersActivity" />
         <activity android:name=".ui.SearchSeatActivity" />
-        <activity android:name=".ui.IntegralAndOrderActivity" />
+        <activity android:name=".ui.IntegralAndOrderOrStatementActivity" />
         <activity android:name=".ui.CancelOrderActivity" />
 
         <activity

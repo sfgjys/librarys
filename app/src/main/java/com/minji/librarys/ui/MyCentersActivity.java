@@ -148,7 +148,7 @@ public class MyCentersActivity extends BaseActivity implements View.OnClickListe
 
 
     private void skipFourActivity(String title) {
-        Intent intent = new Intent(ViewsUitls.getContext(), IntegralAndOrderActivity.class);
+        Intent intent = new Intent(ViewsUitls.getContext(), IntegralAndOrderOrStatementActivity.class);
         intent.putExtra(StringsFiled.ACTIVITY_TITLE, title);
         startActivity(intent);
     }

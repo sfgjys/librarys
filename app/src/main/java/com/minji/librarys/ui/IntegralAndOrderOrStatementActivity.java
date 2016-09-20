@@ -5,6 +5,7 @@ import android.view.View;
 import com.minji.librarys.R;
 import com.minji.librarys.base.BaseActivity;
 import com.minji.librarys.fragment.FragmentIntegralDetail;
+import com.minji.librarys.fragment.FragmentStatementDetail;
 import com.minji.librarys.fragment.FragmentUpdateInformation;
 import com.minji.librarys.fragment.FragmentMyOrder;
 import com.minji.librarys.fragment.FragmentWindowInfromation;
@@ -12,7 +13,7 @@ import com.minji.librarys.fragment.FragmentWindowInfromation;
 /**
  * Created by user on 2016/8/29.
  */
-public class IntegralAndOrderActivity extends BaseActivity {
+public class IntegralAndOrderOrStatementActivity extends BaseActivity {
 
     @Override
     public void onCreateContent() {
@@ -33,6 +34,9 @@ public class IntegralAndOrderActivity extends BaseActivity {
         }
         if (stringTitle.equals("系统消息")) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fl_base_content, new FragmentWindowInfromation()).commit();
+        }
+        if (stringTitle.equals("报表统计")) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fl_base_content, new FragmentStatementDetail()).commit();
         }
     }
 }

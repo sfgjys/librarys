@@ -33,6 +33,8 @@ public class StringsFiled {
     
     public static final String USERID = "userid";
 
+    public static final String ROLEID = "roleId";
+
     public final static String SEARCH_HISTORY = "search_history";
 
     public final static String SEARCH_JSON_RESULT = "search_json_result";

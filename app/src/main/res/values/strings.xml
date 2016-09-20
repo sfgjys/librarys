@@ -45,4 +45,6 @@
     <string name="select_area_reading_room">选择阅览室</string>
     <string name="dialog_select_area_title">请选择阅览室 !</string>
     <string name="select_area_top_no_use">不可用</string>
+    <string name="main_chinese_statement_statistics">报表统计</string>
+    <string name="main_english_statement_statistics">Statistics Report</string>
 </resources>
