@@ -128,6 +128,11 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="update_my_information_part_text" parent="width_hight_ww">
+        <item name="android:textSize">16dp</item>
+        <item name="android:textColor">@color/text_gray</item>
+    </style>
+
     <style name="width_hight_mw">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

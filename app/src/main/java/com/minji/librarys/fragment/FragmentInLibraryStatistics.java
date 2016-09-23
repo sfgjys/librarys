@@ -9,6 +9,13 @@ import android.widget.ImageView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.minji.librarys.R;
 import com.minji.librarys.base.BaseFragment;
 import com.minji.librarys.base.ContentPage;
@@ -33,6 +40,9 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
     private int LINE_CHART_NO_PRESSED = 1;// 此为折线没被选中
     private int BAR_CHART_NO_PRESSED = 2;//  此为柱状没被选中
 
+    private String[] textTime = {"09/02", "09/03", "09/04", "09/05", "09/06", "09/08", "09/09", "09/22", "09/23", "09/28",};
+    private float[] textInLibrary = {0.0f, 1.0f, 2.0f, 4.0f, 2.0f, 7.0f, 4.0f, 5.0f, 6.0f, 2.0f,};
+    private float[] textOrder = {2.0f, 3.0f, 3.0f, 1.0f, 8.0f, 3.0f, 4.0f, 1.0f, 8.0f, 3.0f,};
 
     @Override
     protected void onSubClassOnCreateView() {
@@ -66,7 +76,66 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
         mSelectBarChart.setOnClickListener(this);
 
 
+        // TODO 获取网络数据，并处理后设置然后显示图表
+        setChartDate();
 
+
+    }
+
+    private void setChartDate() {
+
+        // 该对象才是最后set进LineChart的最终数据源
+        LineData lineData = new LineData();
+
+        BarData barData = new BarData();
+
+        // 将10的预约人数和入馆人数数据分别存储在各自的集合中
+        ArrayList<Entry> mOrderDates = new ArrayList<>();
+        ArrayList<Entry> mInLibraryDates = new ArrayList<>();
+
+        ArrayList<BarEntry> mOrderDatesBar = new ArrayList<>();
+        ArrayList<BarEntry> mInLibraryDatesBar = new ArrayList<>();
+
+        // TODO 这里的10需要实时获取
+        for (int i = 0; i < 10; i++) {
+            // 从数据源中获取数据并创建Entry对象并添加进各自的集合中
+            mOrderDates.add(new Entry(textOrder[i], i));
+            mInLibraryDates.add(new Entry(textInLibrary[i], i));
+
+            mOrderDatesBar.add(new BarEntry(textOrder[i], i));
+            mInLibraryDatesBar.add(new BarEntry(textInLibrary[i], i));
+
+            // 添加X轴的标签文本
+            lineData.addXValue(textTime[i]);
+
+            barData.addXValue(textTime[i]);
+        }
+
+
+        // 使用包含了数据的集合与图标文本描述创建LineDataSet对象
+        LineDataSet mOrderLineDataSet = new LineDataSet(mOrderDates, "预约人数");
+        mOrderLineDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+        LineDataSet mInLibraryLineDataSet = new LineDataSet(mInLibraryDates, "入馆人数");
+        mInLibraryLineDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+
+        BarDataSet mOrderLineDataSetBar = new BarDataSet(mOrderDatesBar, "预约人数");
+        mOrderLineDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+        BarDataSet mInLibraryLineDataSetBar = new BarDataSet(mInLibraryDatesBar, "入馆人数");
+        mInLibraryLineDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+
+
+        // 添加两组包含10个Y轴数据集合的对象实例
+        lineData.addDataSet(mOrderLineDataSet);
+        lineData.addDataSet(mInLibraryLineDataSet);
+
+        barData.addDataSet(mInLibraryLineDataSetBar);
+        barData.addDataSet(mOrderLineDataSetBar);
+
+        mLineChart.setData(lineData);
+        mLineChart.invalidate();
+
+        mBarChart.setData(barData);
+        mBarChart.invalidate();
 
     }
 
