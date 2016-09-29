@@ -21,7 +21,8 @@
             android:drawableLeft="@mipmap/login_password"
             android:drawableStart="@mipmap/login_password"
             android:hint="@string/login_hit_password"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:text="123456" />
 
         <EditText
             android:id="@+id/et_login_user"
@@ -30,7 +31,8 @@
             android:layout_marginBottom="20dp"
             android:drawableLeft="@mipmap/login_user"
             android:drawableStart="@mipmap/login_user"
-            android:hint="@string/login_hit_user" />
+            android:hint="@string/login_hit_user"
+            android:text="admin" />
 
 
     </RelativeLayout>
