@@ -197,14 +197,14 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
         barLineChartBase.setPaint(paint, 7);
     }
 
-    private void setChartDate() {
+    private void setChartDate(String[] timeXValue, float[] orderDate, float[] inLibraryDate) {
 
         // 每次设置数据时都重新创建mLineData和mBarData对象
         mLineData = new LineData();
         mBarData = new BarData();
 
         // 清空四个ArrayList数据并添加新数据
-        setDateToListOrXValue(textTime, textOrder, textInLibrary);
+        setDateToListOrXValue(timeXValue, orderDate, inLibraryDate);
 
         // 使用这个方法的前提，如果四个DateSet对象有一个不为空则，要使用mLineData或者mBarData 移除掉DateSet对象
         // 使用四个ArrayList数据对象重新创建LineDataSet或者BarDataSet然后赋值给四个DateSet对象
@@ -224,17 +224,24 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
      *使用四个ArrayList数据对象重新创建LineDataSet或者BarDataSet然后赋值给四个DateSet对象*/
     private void getLineBarDateSetAndAddDateSet() {
 
-        mOrderDataSetLine = getOrderLineDataSet(mOrderDatesLineList);
-        mInLibraryDataSetLine = getInLibraryLineDataSet(mInLibraryDatesLineList);
-        mOrderDataSetBar = getOrderBarDataSet(mOrderDatesBarList);
-        mInLibraryDataSetBar = getInLibraryBarDataSet(mInLibraryDatesBarList);
+        if (mOrderDatesLineList.size() > 0) {
+            mOrderDataSetLine = getOrderLineDataSet(mOrderDatesLineList);
+            mLineData.addDataSet(mOrderDataSetLine);
+        }
 
-        // 添加两组包含10个Y轴数据集合的对象实例
-        mLineData.addDataSet(mOrderDataSetLine);
-        mLineData.addDataSet(mInLibraryDataSetLine);
+        if (mInLibraryDatesLineList.size() > 0) {
+            mInLibraryDataSetLine = getInLibraryLineDataSet(mInLibraryDatesLineList);
+            mLineData.addDataSet(mInLibraryDataSetLine);
+        }
 
-        mBarData.addDataSet(mInLibraryDataSetBar);
-        mBarData.addDataSet(mOrderDataSetBar);
+        if (mOrderDatesBarList.size() > 0) {
+            mOrderDataSetBar = getOrderBarDataSet(mOrderDatesBarList);
+            mBarData.addDataSet(mOrderDataSetBar);
+        }
+        if (mInLibraryDatesBarList.size() > 0) {
+            mInLibraryDataSetBar = getInLibraryBarDataSet(mInLibraryDatesBarList);
+            mBarData.addDataSet(mInLibraryDataSetBar);
+        }
     }
 
     /*
@@ -247,20 +254,26 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
         mOrderDatesBarList.clear();
         mInLibraryDatesLineList.clear();
         mInLibraryDatesBarList.clear();
-        for (int i = 0; i < timeXValue.length; i++) {
-            // 添加X轴的标签文本
-            mLineData.addXValue(timeXValue[i]);
-            mBarData.addXValue(timeXValue[i]);
+        if (timeXValue != null) {
+            for (int i = 0; i < timeXValue.length; i++) {
+                // 添加X轴的标签文本
+                mLineData.addXValue(timeXValue[i]);
+                mBarData.addXValue(timeXValue[i]);
+            }
         }
-        for (int i = 0; i < orderDate.length; i++) {
-            // 从textOrder数据源中获取数据并创建Entry对象并添加进各自的集合中
-            mOrderDatesLineList.add(new Entry(orderDate[i], i));
-            mOrderDatesBarList.add(new BarEntry(orderDate[i], i));
+        if (orderDate != null) {
+            for (int i = 0; i < orderDate.length; i++) {
+                // 从textOrder数据源中获取数据并创建Entry对象并添加进各自的集合中
+                mOrderDatesLineList.add(new Entry(orderDate[i], i));
+                mOrderDatesBarList.add(new BarEntry(orderDate[i], i));
+            }
         }
-        for (int i = 0; i < inLibraryDate.length; i++) {
-            // 从textInLibrary数据源中获取数据并创建Entry对象并添加进各自的集合中
-            mInLibraryDatesLineList.add(new Entry(inLibraryDate[i], i));
-            mInLibraryDatesBarList.add(new BarEntry(inLibraryDate[i], i));
+        if (inLibraryDate != null) {
+            for (int i = 0; i < inLibraryDate.length; i++) {
+                // 从textInLibrary数据源中获取数据并创建Entry对象并添加进各自的集合中
+                mInLibraryDatesLineList.add(new Entry(inLibraryDate[i], i));
+                mInLibraryDatesBarList.add(new BarEntry(inLibraryDate[i], i));
+            }
         }
     }
 
@@ -349,7 +362,7 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
             case R.id.bt_in_library_statistics_start_search:
 
                 // TODO 获取网络数据，并处理后设置然后显示图表
-                setChartDate();
+                setChartDate(textTime, null, textInLibrary);
 
                 break;
         }
