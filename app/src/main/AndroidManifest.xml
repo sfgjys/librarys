@@ -20,7 +20,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.LoginActivity">
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,7 +30,7 @@
         <activity
             android:name=".ui.RegisterAndForgetActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-        <activity android:name=".ui.MainActivity" />
+        <activity android:name=".ui.LoginActivity" />
         <activity android:name=".ui.SelectAreaActivity" />
         <activity android:name=".ui.SelectAreasActivity" />
         <activity android:name=".ui.MyCentersActivity" />
