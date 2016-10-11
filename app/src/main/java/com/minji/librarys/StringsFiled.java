@@ -30,7 +30,7 @@ public class StringsFiled {
     public static final String FLOORID = "floorid";
 
     public static final String READINGROOMID = "readingroomid";
-    
+
     public static final String USERID = "userid";
 
     public static final String ROLEID = "roleId";
@@ -41,4 +41,9 @@ public class StringsFiled {
 
     public final static String SEARCH_RESULT_SEAT_NUMBER = "search_result_seat_number";
 
+    public final static String IS_AUTO_LOGIN = "is_auto_login";
+
+    public final static String IP_ADDRESS_PREFIX = "address";
+
+    public final static String SAVE_USERNAME = "mUser";
 }
