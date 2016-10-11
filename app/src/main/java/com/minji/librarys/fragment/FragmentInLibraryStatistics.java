@@ -27,6 +27,8 @@ import com.github.mikephil.charting.utils.Utils;
 import com.minji.librarys.R;
 import com.minji.librarys.base.BaseFragment;
 import com.minji.librarys.base.ContentPage;
+import com.minji.librarys.chart.InLibraryMarkerView;
+import com.minji.librarys.chart.PersonNumberFormatter;
 import com.minji.librarys.uitls.ViewsUitls;
 
 import java.util.ArrayList;
@@ -54,7 +56,7 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
     private ArrayList<BarEntry> mOrderDatesBarList = new ArrayList<>();
     private ArrayList<BarEntry> mInLibraryDatesBarList = new ArrayList<>();
 
-    private String[] textTime = {"09/02", "09/03", "09/04", "09/05", "09/06", "09/08", "09/09", "09/22", "09/23", "09/28",};
+    private String[] textTime = {"09/02", "09/03", "09/04", "09/05", "09/06", "09/08", "09/09", "09/22", "09/23", "09/28","     "};
     private float[] textInLibrary = {0.0f, 1.0f, 2.0f, 4.0f, 2.0f, 7.0f, 4.0f, 5.0f, 6.0f, 2.0f,};
     private float[] textOrder = {2.0f, 3.0f, 3.0f, 1.0f, 8.0f, 3.0f, 4.0f, 0.0f, 1.0f, 2.0f};
 
@@ -71,7 +73,7 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
 
     @Override
     protected void onSubClassOnCreateView() {
-        loadDataAndRefresh();
+         loadDataAndRefresh();
     }
 
     @Override
@@ -107,6 +109,8 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
     }
 
     private void setBarLineChartStyle(BarLineChartBase barLineChartBase) {
+
+        barLineChartBase.setMarkerView(new InLibraryMarkerView(getActivity(), R.layout.item_markerview,textTime));
 
         setNoDataTextPaint(barLineChartBase);
 
@@ -148,14 +152,13 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
         xAxis.setDrawLabels(true); // 设置X轴上的标签文字是否绘制
         xAxis.setTypeface(Typeface.DEFAULT_BOLD); // 设置X轴上标签的字体
         xAxis.setTextColor(Color.BLACK);//设置X轴标签的颜色。
-//        xAxis.setTextSize(24f);//设置X轴标签的文字大小。
+//        xAxis.setTextSize(14f);//设置X轴标签的文字大小。
 //        xAxis.setGridLineWidth(10f);//设置X轴网格线的宽度。
         xAxis.setGridColor(ContextCompat.getColor(getActivity(), R.color.my_darker_gray));//设置X轴上网格线(竖线)颜色。
         xAxis.setAxisLineColor(Color.BLACK);//设置 X轴 轴线的颜色。
         xAxis.setAxisLineWidth(1f);// 设置 X轴 轴线的宽度。
         xAxis.enableGridDashedLine(10f, 10f, 0f);// 设置X轴上的网格线为虚线模式
 //        xAxis.setSpaceBetweenLabels(1);//设置标签字符间的空隙，默认characters间隔是4 。(有可能根据屏幕宽度有一定关系)
-
 
         // Y轴的设置
         YAxis leftAxis = barLineChartBase.getAxisLeft();
@@ -173,7 +176,8 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
         leftAxis.setDrawGridLines(true);
         leftAxis.enableGridDashedLine(10f, 10f, 0f);
         leftAxis.setAxisLineWidth(1f);
-//        leftAxis.setValueFormatter(new PercentFormatter());// 设置Y轴的标签值的格式(此处是%格式)
+//        leftAxis.setTextSize(14f);
+        leftAxis.setValueFormatter(new PersonNumberFormatter());// 设置Y轴的标签值的格式(此处是%格式)
 
         // 触摸监听交互
         barLineChartBase.setTouchEnabled(true);   //启用/禁用与图表的所有可能的触摸交互。
@@ -362,7 +366,7 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
             case R.id.bt_in_library_statistics_start_search:
 
                 // TODO 获取网络数据，并处理后设置然后显示图表
-                setChartDate(textTime, null, textInLibrary);
+                setChartDate(textTime, textOrder, textInLibrary);
 
                 break;
         }

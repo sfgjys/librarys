@@ -14,9 +14,9 @@ android {
         versionCode 1
         versionName "1.0"
         manifestPlaceholders = [
-                GETUI_APP_ID    : "zjuzPc2lyPAtYX2xD2cVpA",
-                GETUI_APP_KEY   : "CIFKlfy0VS6Ae9qKJZtu4A",
-                GETUI_APP_SECRET: "4yYIxMMQF59gTazvCC2kHA",
+                GETUI_APP_ID    : "DbcZQZizUv5oARbNh1IfH6",
+                GETUI_APP_KEY   : "dJLCPjdmj0A7e3Xqi7tCj7",
+                GETUI_APP_SECRET: "LNSyMzfdGlAaVj8bATiZh4",
                 PACKAGE_NAME    : applicationId
         ]
         ndk {
