@@ -11,5 +11,7 @@ public class IpFiled {
 
     public final static String SEATS_DETAIL = "/library-seat/mobile/seatMobile";
 
-    public final static String IS_OK_ORDER ="/library-seat/mobile/outBespeak";
+    public final static String IS_OK_ORDER = "/library-seat/mobile/outBespeak";
+
+    public final static String MY_CENTER_INFORMATION = "/library-seat/mobile/data";
 }
