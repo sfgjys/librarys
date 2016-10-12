@@ -15,6 +15,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.minji.librarys.IpFiled;
 import com.minji.librarys.R;
 import com.minji.librarys.StringsFiled;
 import com.minji.librarys.adapter.ReadingRoomAdapter;
@@ -22,6 +23,7 @@ import com.minji.librarys.base.BaseFragment;
 import com.minji.librarys.base.ContentPage;
 import com.minji.librarys.bean.SeatDetail;
 import com.minji.librarys.http.OkHttpManger;
+import com.minji.librarys.ui.SelectAreasActivity;
 import com.minji.librarys.uitls.SharedPreferencesUtil;
 import com.minji.librarys.uitls.ToastUtil;
 import com.minji.librarys.uitls.ViewsUitls;
@@ -58,8 +60,10 @@ public class FragmentReadingRoom extends BaseFragment<SeatDetail> implements Vie
     private int mSeatId;
     private int mPositionOrderTure;
     private ReadingRoomAdapter readingRoomAdapter;
+    private SelectAreasActivity selectAreasActivity;
 
 
+    /*获取传递过来的数据*/
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +74,7 @@ public class FragmentReadingRoom extends BaseFragment<SeatDetail> implements Vie
         mUserId = SharedPreferencesUtil.getString(getActivity(), StringsFiled.USERID, "");
         System.out.println(mUserId + "-" + mFloorId + "-" + mReadingId);
 
+        selectAreasActivity = (SelectAreasActivity) getActivity();
     }
 
     @Override
@@ -100,7 +105,6 @@ public class FragmentReadingRoom extends BaseFragment<SeatDetail> implements Vie
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (mSeatDetails.get(position).getSeatStatus() == 0) {
-
                     mPositionOrderTure = position;
                     mSeatId = mSeatDetails.get(position).getSeatId();
                     showReadingRoomOrderSeatDialog();
@@ -111,10 +115,10 @@ public class FragmentReadingRoom extends BaseFragment<SeatDetail> implements Vie
         return view;
     }
 
-
+    /*点击可以预约的座位编号弹出对话框*/
     private void showReadingRoomOrderSeatDialog() {
         mOrderAlertDialog = new AlertDialog.Builder(getActivity()).create();
-                mOrderAlertDialog.setView(new EditText(ViewsUitls.getContext()));// 为了让对话框内的输入框可以使用？
+        mOrderAlertDialog.setView(new EditText(ViewsUitls.getContext()));// 为了让对话框内的输入框可以使用？
         WindowManager.LayoutParams attributes = mOrderAlertDialog.getWindow().getAttributes();// 获取对话框的属性集
         WindowManager m = getActivity().getWindowManager();
         Display d = m.getDefaultDisplay(); // 为获取屏幕宽、高
@@ -148,66 +152,93 @@ public class FragmentReadingRoom extends BaseFragment<SeatDetail> implements Vie
                 mOrderAlertDialog.cancel();
                 break;
             case R.id.tv_order_seat_dialog_make_sure_order:
-
-                OkHttpClient okHttpClient = OkHttpManger.getInstance().getOkHttpClient();
-                RequestBody formBody = new FormBody.Builder().add("userId", mUserId).add("seatId", mSeatId + "").build();
-                Request request = new Request.Builder()
-                        .url("http://192.168.1.40:8080/library-seat/mobile/outBespeak")
-                        .post(formBody)
-                        .build();
-                okHttpClient.newCall(request).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        System.out.println("=========================onFailure=============================");
-                    }
-
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        try {
-                            JSONObject object = new JSONObject(response.body().string());
-                            final boolean result = object.optBoolean("result");
-                            final String message = object.optString("message");
-                            ViewsUitls.runInMainThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ToastUtil.showToast(ViewsUitls.getContext(), message);
-                                    if (result) {
-                                        mOrderAlertDialog.cancel();
-                                        mSeatDetails.get(mPositionOrderTure).setSeatStatus(1);
-                                        readingRoomAdapter.notifyDataSetChanged();
-                                    }
-                                }
-                            });
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-
-                    }
-                });
-
+                requestIsOrderSuccess();
                 break;
         }
     }
 
+    /*请求网络是否能进行预约*/
+    private void requestIsOrderSuccess() {
+        selectAreasActivity.setLoadingVisibility(View.VISIBLE);
+        selectAreasActivity.setIsInterruptTouch(true);
+
+        OkHttpClient okHttpClient = OkHttpManger.getInstance().getOkHttpClient();
+        RequestBody formBody = new FormBody.Builder().add("userId", mUserId).add("seatId", mSeatId + "").build();
+
+        String address = SharedPreferencesUtil.getString(
+                ViewsUitls.getContext(), StringsFiled.IP_ADDRESS_PREFIX, "");
+
+        Request request = new Request.Builder()
+                .url(address + IpFiled.IS_OK_ORDER)
+                .post(formBody)
+                .build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                ViewsUitls.runInMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        selectAreasActivity.setLoadingVisibility(View.GONE);
+                        selectAreasActivity.setIsInterruptTouch(false);
+                    }
+                });
+                System.out.println("=========================onFailure=============================");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                analysisOrderResult(response);
+            }
+        });
+    }
+
+    /*解析请求预约返回的结果*/
+    private void analysisOrderResult(Response response) throws IOException {
+        try {
+            JSONObject object = new JSONObject(response.body().string());
+            final boolean result = object.optBoolean("result");
+            final String message = object.optString("message");
+            ViewsUitls.runInMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    selectAreasActivity.setLoadingVisibility(View.GONE);
+                    selectAreasActivity.setIsInterruptTouch(false);
+                    ToastUtil.showToast(ViewsUitls.getContext(), message);
+                    if (result) {
+                        mOrderAlertDialog.cancel();
+                        mSeatDetails.get(mPositionOrderTure).setSeatStatus(1);
+                        readingRoomAdapter.notifyDataSetChanged();
+                    }
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*请求网络获取座位列表数据*/
     private void requestSeatLists() {
         OkHttpClient okHttpClient = OkHttpManger.getInstance().getOkHttpClient();
         RequestBody formBody = new FormBody.Builder().add("userid", mUserId).add("floorId", mFloorId).add("areaId", mReadingId).build();
+
+        String address = SharedPreferencesUtil.getString(
+                ViewsUitls.getContext(), StringsFiled.IP_ADDRESS_PREFIX, "");
+
         Request request = new Request.Builder()
-                .url("http://192.168.1.40:8080/library-seat/mobile/seatMobile")
+                .url(address + IpFiled.SEATS_DETAIL)
                 .post(formBody)
                 .build();
         try {
             Response response = okHttpClient.newCall(request).execute();
             if (response.isSuccessful()) {
                 mResultString = response.body().string();
-                Log.i("asdfgh", mResultString);
+                Log.i("-FragmentReadingRoom-", mResultString);
                 analysisJsonDate();
             }
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("=========================onFailure=============================");
-            Log.i("asdfgh", "okHttp is request error");
+            Log.i("-FragmentReadingRoom-", "okHttp is request error");
             mSeatDetails = null;
         }
     }
