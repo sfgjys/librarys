@@ -8,7 +8,7 @@ import com.minji.librarys.fragment.FragmentIntegralDetail;
 import com.minji.librarys.fragment.FragmentStatementDetail;
 import com.minji.librarys.fragment.FragmentUpdateInformation;
 import com.minji.librarys.fragment.FragmentMyOrder;
-import com.minji.librarys.fragment.FragmentWindowInfromation;
+import com.minji.librarys.fragment.FragmentWindowInformation;
 
 /**
  * Created by user on 2016/8/29.
@@ -33,7 +33,7 @@ public class IntegralAndOrderOrStatementActivity extends BaseActivity {
             getSupportFragmentManager().beginTransaction().replace(R.id.fl_base_content, new FragmentUpdateInformation()).commit();
         }
         if (stringTitle.equals("系统消息")) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fl_base_content, new FragmentWindowInfromation()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fl_base_content, new FragmentWindowInformation()).commit();
         }
         if (stringTitle.equals("报表统计")) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fl_base_content, new FragmentStatementDetail()).commit();

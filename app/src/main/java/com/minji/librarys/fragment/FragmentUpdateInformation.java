@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.minji.librarys.IpFiled;
 import com.minji.librarys.R;
 import com.minji.librarys.StringsFiled;
 import com.minji.librarys.base.BaseFragment;
@@ -78,8 +79,12 @@ public class FragmentUpdateInformation extends BaseFragment implements View.OnCl
         OkHttpClient okHttpClient = OkHttpManger.getInstance().getOkHttpClient();
         RequestBody meInformationFormBody = new FormBody.Builder()
                 .add("userid", mUserId).build();
+
+        String address = SharedPreferencesUtil.getString(
+                ViewsUitls.getContext(), StringsFiled.IP_ADDRESS_PREFIX, "");
+
         Request meInformationRequest = new Request.Builder()
-                .url("http://192.168.1.40:8080/library-seat/mobile/data")
+                .url(address + IpFiled.UPDATE_INFORMATION)
                 .post(meInformationFormBody)
                 .build();
         try {

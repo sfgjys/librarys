@@ -20,4 +20,8 @@ public class IpFiled {
     public final static String TODAY_INTEGRAL = "/library-seat/mobile/userPointDayInfo";
 
     public final static String HISTORY_INTEGRAL = "/library-seat/mobile/userPointHisInfo";
+
+    public final static String ME_CENTER_MY_ORDER = "/library-seat/mobile/myBespeakInfo";
+
+    public final static String UPDATE_INFORMATION = "/library-seat/mobile/data";
 }
