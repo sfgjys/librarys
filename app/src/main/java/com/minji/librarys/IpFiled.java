@@ -13,5 +13,7 @@ public class IpFiled {
 
     public final static String IS_OK_ORDER = "/library-seat/mobile/outBespeak";
 
-    public final static String MY_CENTER_INFORMATION = "/library-seat/mobile/data";
+    public final static String MY_CENTER_INFORMATION_ONE = "/library-seat/mobile/data";
+    
+    public final static String MY_CENTER_INFORMATION_TWO = "/library-seat/mobile/myPointAndYesterdayPointInfo";
 }

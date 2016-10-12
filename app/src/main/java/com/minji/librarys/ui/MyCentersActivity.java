@@ -108,14 +108,14 @@ public class MyCentersActivity extends BaseActivity implements View.OnClickListe
                 ViewsUitls.getContext(), StringsFiled.IP_ADDRESS_PREFIX, "");
 
         Request meInformationRequest = new Request.Builder()
-                .url(address + IpFiled.MY_CENTER_INFORMATION)
+                .url(address + IpFiled.MY_CENTER_INFORMATION_ONE)
                 .post(meInformationFormBody)
                 .build();
 
         RequestBody allPointFormBody = new FormBody.Builder()
                 .add("userid", mUserId).build();
         Request allPointRequest = new Request.Builder()
-                .url("http://192.168.1.40:8080/library-seat/mobile/myPointAndYesterdayPointInfo")
+                .url(address+IpFiled.MY_CENTER_INFORMATION_TWO)
                 .post(allPointFormBody)
                 .build();
         okHttpClient.newCall(meInformationRequest).enqueue(new Callback() {
