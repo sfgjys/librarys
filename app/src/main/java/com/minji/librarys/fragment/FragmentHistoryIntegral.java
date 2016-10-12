@@ -4,6 +4,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
+import com.minji.librarys.IpFiled;
 import com.minji.librarys.R;
 import com.minji.librarys.StringsFiled;
 import com.minji.librarys.adapter.HistoryIntegralAdapter;
@@ -60,8 +61,12 @@ public class FragmentHistoryIntegral extends BaseFragment<HistoryIntegralDetail>
         OkHttpClient okHttpClient = OkHttpManger.getInstance().getOkHttpClient();
         RequestBody formBody = new FormBody.Builder()
                 .add("userid", mUserId).build();
+
+        String address = SharedPreferencesUtil.getString(
+                ViewsUitls.getContext(), StringsFiled.IP_ADDRESS_PREFIX, "");
+
         Request request = new Request.Builder()
-                .url("http://192.168.1.40:8080/library-seat/mobile/userPointHisInfo")
+                .url(address + IpFiled.HISTORY_INTEGRAL)
                 .post(formBody)
                 .build();
         try {

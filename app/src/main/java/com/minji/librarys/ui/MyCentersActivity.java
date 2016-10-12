@@ -53,9 +53,6 @@ public class MyCentersActivity extends BaseActivity implements View.OnClickListe
     @Override
     public void onCreateContent() {
 
-        SharedPreferencesUtil.saveStirng(getApplicationContext(), StringsFiled.IP_ADDRESS_PREFIX,
-                "http://" + "192.168.1.40:8080");
-
         setBackVisibility(View.VISIBLE);
         setSettingVisibility(View.GONE);
         setTitleVisibility(View.VISIBLE);
