@@ -191,7 +191,7 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
                 ViewsUitls.runInMainThread(new Runnable() {
                     @Override
                     public void run() {
-                        ToastUtil.showToast(LoginActivity.this, "服务器正忙,请稍候");
+                        ToastUtil.showToast(LoginActivity.this, "网络异常,请稍候");
                     }
                 });
             }
@@ -203,22 +203,26 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
                 ViewsUitls.runInMainThread(new Runnable() {
                     @Override
                     public void run() {
-                        try {
-                            JSONObject jsonObject = new JSONObject(result);
-                            String message = jsonObject.optString("message");
-                            if (result.contains("true")) {
+                        if (!result.contains("<html>")) {
+                            try {
+                                JSONObject jsonObject = new JSONObject(result);
+                                String message = jsonObject.optString("message");
+                                if (result.contains("true")) {
 
-                                saveSuccessPassWardUserName();
+                                    saveSuccessPassWardUserName();
 
-                                SharedPreferencesUtil.saveint(getApplicationContext(), StringsFiled.ROLEID, jsonObject.optInt("roleId"));
-                                SharedPreferencesUtil.saveStirng(getApplicationContext(), StringsFiled.USERID, jsonObject.optString("userId"));
-                                Intent mainActivity = new Intent(ViewsUitls.getContext(), MainActivity.class);
-                                startActivity(mainActivity);
-                                finish();
+                                    SharedPreferencesUtil.saveint(getApplicationContext(), StringsFiled.ROLEID, jsonObject.optInt("roleId"));
+                                    SharedPreferencesUtil.saveStirng(getApplicationContext(), StringsFiled.USERID, jsonObject.optString("userId"));
+                                    Intent mainActivity = new Intent(ViewsUitls.getContext(), MainActivity.class);
+                                    startActivity(mainActivity);
+                                    finish();
+                                }
+                                ToastUtil.showToast(LoginActivity.this, message);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                            ToastUtil.showToast(LoginActivity.this, message);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        } else {
+                            ToastUtil.showToast(LoginActivity.this, "服务器异常,请稍候");
                         }
                     }
                 });
