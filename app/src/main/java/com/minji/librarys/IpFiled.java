@@ -5,23 +5,37 @@ package com.minji.librarys;
  */
 public class IpFiled {
 
-    public final static String LOGIN = "/library-seat/user/ajaxlogin";
+    public final static String IP = "/library-seat/";
 
-    public final static String FLOOR_READING_ROOM_DATE = "/library-seat/mobile/floorAndArea";
+    public final static String MOBILE = IP + "mobile/";
 
-    public final static String SEATS_DETAIL = "/library-seat/mobile/seatMobile";
+    public final static String LOGIN = IP + "user/ajaxlogin";
 
-    public final static String IS_OK_ORDER = "/library-seat/mobile/outBespeak";
+    public final static String FLOOR_READING_ROOM_DATE = MOBILE + "floorAndArea";
 
-    public final static String MY_CENTER_INFORMATION_ONE = "/library-seat/mobile/data";
+    public final static String SEATS_DETAIL = MOBILE + "seatMobile";
 
-    public final static String MY_CENTER_INFORMATION_TWO = "/library-seat/mobile/myPointAndYesterdayPointInfo";
+    public final static String IS_OK_ORDER = MOBILE + "outBespeak";
 
-    public final static String TODAY_INTEGRAL = "/library-seat/mobile/userPointDayInfo";
+    public final static String MY_CENTER_INFORMATION_ONE = MOBILE + "data";
 
-    public final static String HISTORY_INTEGRAL = "/library-seat/mobile/userPointHisInfo";
+    public final static String MY_CENTER_INFORMATION_TWO = MOBILE + "myPointAndYesterdayPointInfo";
 
-    public final static String ME_CENTER_MY_ORDER = "/library-seat/mobile/myBespeakInfo";
+    public final static String TODAY_INTEGRAL = MOBILE + "userPointDayInfo";
 
-    public final static String UPDATE_INFORMATION = "/library-seat/mobile/data";
+    public final static String HISTORY_INTEGRAL = MOBILE + "userPointHisInfo";
+
+    public final static String ME_CENTER_MY_ORDER = MOBILE + "myBespeakInfo";
+
+    public final static String UPDATE_INFORMATION = MOBILE + "data";
+
+    public final static String SEARCH_SEAT_ORDER_DETAIL = MOBILE + "seat";
+
+    public final static String CANCEL_ORDER_LIST = MOBILE + "removeBespeakList";
+
+    public final static String IS_CENCEL_ORDER = MOBILE + "removeBespeak";
+
+    public final static String IN_LIBRARY_STATISTICS = IP + "echarts/lib_echarts";
+
+    public final static String OCCUPANCY_STATISTICS = IP + "echarts/area_echarts";
 }

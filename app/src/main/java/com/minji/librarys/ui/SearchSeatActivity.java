@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.minji.librarys.FragmentTag;
+import com.minji.librarys.IpFiled;
 import com.minji.librarys.R;
 import com.minji.librarys.StringsFiled;
 import com.minji.librarys.base.BaseActivity;
@@ -189,8 +190,12 @@ public class SearchSeatActivity extends BaseActivity implements View.OnClickList
         OkHttpClient okHttpClient = OkHttpManger.getInstance().getOkHttpClient();
         RequestBody formBody = new FormBody.Builder()
                 .add("seat", searchContent).build();
+
+        String address = SharedPreferencesUtil.getString(
+                ViewsUitls.getContext(), StringsFiled.IP_ADDRESS_PREFIX, "");
+
         Request request = new Request.Builder()
-                .url("http://192.168.1.40:8080/library-seat/mobile/seat")
+                .url(address+ IpFiled.SEARCH_SEAT_ORDER_DETAIL)
                 .post(formBody)
                 .build();
         okHttpClient.newCall(request).enqueue(new Callback() {

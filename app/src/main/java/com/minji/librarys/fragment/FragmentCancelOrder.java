@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.minji.librarys.IpFiled;
 import com.minji.librarys.ObserverTag;
 import com.minji.librarys.R;
 import com.minji.librarys.StringsFiled;
@@ -20,6 +21,7 @@ import com.minji.librarys.base.ContentPage;
 import com.minji.librarys.bean.CancelOrderDetail;
 import com.minji.librarys.http.OkHttpManger;
 import com.minji.librarys.observer.Observers;
+import com.minji.librarys.ui.CancelOrderActivity;
 import com.minji.librarys.uitls.SharedPreferencesUtil;
 import com.minji.librarys.uitls.ToastUtil;
 import com.minji.librarys.uitls.ViewsUitls;
@@ -51,6 +53,7 @@ public class FragmentCancelOrder extends BaseFragment<CancelOrderDetail> impleme
     private int mCancelOrderBid;
     private int mCancelOrderPosition;
     private AlertDialog alertDialog;
+    private CancelOrderActivity cancelOrderActivity;
 
     @Override
     protected void onSubClassOnCreateView() {
@@ -73,6 +76,9 @@ public class FragmentCancelOrder extends BaseFragment<CancelOrderDetail> impleme
 
     @Override
     protected ContentPage.ResultState onLoad() {
+
+        cancelOrderActivity = (CancelOrderActivity) getActivity();
+
         requestOrderLists();
         return chat(cancelOrderList);
     }
@@ -84,8 +90,12 @@ public class FragmentCancelOrder extends BaseFragment<CancelOrderDetail> impleme
 
         OkHttpClient okHttpClient = OkHttpManger.getInstance().getOkHttpClient();
         RequestBody formBody = new FormBody.Builder().add("userid", mUserId).build();
+
+        String address = SharedPreferencesUtil.getString(
+                ViewsUitls.getContext(), StringsFiled.IP_ADDRESS_PREFIX, "");
+
         Request request = new Request.Builder()
-                .url("http://192.168.1.40:8080/library-seat/mobile/removeBespeakList")
+                .url(address + IpFiled.CANCEL_ORDER_LIST)
                 .post(formBody)
                 .build();
         try {
@@ -136,7 +146,7 @@ public class FragmentCancelOrder extends BaseFragment<CancelOrderDetail> impleme
     }
 
     private void showCancelOrderDialog() {
-        alertDialog = new AlertDialog.Builder(getActivity()).create();
+        alertDialog = new AlertDialog.Builder(cancelOrderActivity).create();
         alertDialog.setView(new EditText(ViewsUitls.getContext()));// 为了让对话框内的输入框可以使用？
         WindowManager.LayoutParams attributes = alertDialog.getWindow().getAttributes();// 获取对话框的属性集
         WindowManager m = getActivity().getWindowManager();
@@ -177,42 +187,57 @@ public class FragmentCancelOrder extends BaseFragment<CancelOrderDetail> impleme
     }
 
     private void requestCancelOrder() {
+
         OkHttpClient okHttpClient = OkHttpManger.getInstance().getOkHttpClient();
         RequestBody formBody = new FormBody.Builder().add("userid", mUserId).add("bid", mCancelOrderBid + "").build();
+
+        String address = SharedPreferencesUtil.getString(
+                ViewsUitls.getContext(), StringsFiled.IP_ADDRESS_PREFIX, "");
+
         Request request = new Request.Builder()
-                .url("http://192.168.1.40:8080/library-seat/mobile/removeBespeak")
+                .url(address + IpFiled.IS_CENCEL_ORDER)
                 .post(formBody)
                 .build();
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                ViewsUitls.runInMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtil.showToast(getActivity(), "网络异常，请稍候");
+                    }
+                });
                 System.out.println("========================onFailure========================");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                String result = response.body().string();
+                final String result = response.body().string();
                 System.out.println(result);
-                try {
-                    final JSONObject object = new JSONObject(result);
-                    ViewsUitls.runInMainThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (object.optBoolean("result")) {// 取消成功
-                                ToastUtil.showToast(ViewsUitls.getContext(), object.optString("message"));
-                                cancelOrderList.remove(mCancelOrderPosition);
-                                cancelOrderAdapter.notifyDataSetChanged();
-                                alertDialog.cancel();
-                            } else {// 取消失败
-                                ToastUtil.showToast(ViewsUitls.getContext(), "取消失败");
+                ViewsUitls.runInMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!result.contains("html")) {
+                            try {
+                                final JSONObject object = new JSONObject(result);
+
+                                if (object.optBoolean("result")) {// 取消成功
+                                    ToastUtil.showToast(ViewsUitls.getContext(), object.optString("message"));
+                                    cancelOrderList.remove(mCancelOrderPosition);
+                                    cancelOrderAdapter.notifyDataSetChanged();
+                                    alertDialog.cancel();
+                                } else {// 取消失败
+                                    ToastUtil.showToast(ViewsUitls.getContext(), "取消失败");
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
+                        } else {
+                            ToastUtil.showToast(getActivity(), "服务器异常，请稍候");
                         }
-                    });
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-
+                    }
+                });
             }
         });
     }

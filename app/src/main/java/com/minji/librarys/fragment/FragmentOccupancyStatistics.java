@@ -25,21 +25,41 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.utils.Utils;
+import com.minji.librarys.IpFiled;
 import com.minji.librarys.R;
+import com.minji.librarys.StringsFiled;
 import com.minji.librarys.base.BaseFragment;
 import com.minji.librarys.base.ContentPage;
 import com.minji.librarys.chart.OccupancyMarkerView;
+import com.minji.librarys.http.OkHttpManger;
+import com.minji.librarys.ui.IntegralAndOrderOrStatementActivity;
+import com.minji.librarys.uitls.SharedPreferencesUtil;
+import com.minji.librarys.uitls.StringUtils;
+import com.minji.librarys.uitls.ToastUtil;
 import com.minji.librarys.uitls.ViewsUitls;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * Created by user on 2016/9/22.
  */
 public class FragmentOccupancyStatistics extends BaseFragment implements View.OnClickListener {
     private View inflate;
-    private EditText mInputStartDay;
-    private Button mStartDaySearch;
+    private EditText mInputFloor;
+    private Button mFloorSearch;
     private LineChart mLineChart;
     private BarChart mBarChart;
     private ImageView mSelectLineChart;
@@ -50,13 +70,13 @@ public class FragmentOccupancyStatistics extends BaseFragment implements View.On
     private int BAR_CHART_NO_PRESSED = 2;//  此为柱状没被选中
 
     // 分别存储折线或者柱状数据的对象
-    private ArrayList<Entry> mOrderDatesLineList = new ArrayList<>();
-    private ArrayList<Entry> mInLibraryDatesLineList = new ArrayList<>();
-    private ArrayList<BarEntry> mOrderDatesBarList = new ArrayList<>();
-    private ArrayList<BarEntry> mInLibraryDatesBarList = new ArrayList<>();
+    private ArrayList<Entry> mOccupancyDatesLineList = new ArrayList<>();
+    private ArrayList<Entry> mNoNoDatesLineList = new ArrayList<>();
+    private ArrayList<BarEntry> mOccupancyDatesBarList = new ArrayList<>();
+    private ArrayList<BarEntry> mNoNODatesBarList = new ArrayList<>();
 
-    private String[] textTime = {"东阅览室", "南阅览室", "西阅览室", "北阅览室","     "};
-    private float[] textInLibrary = {0.0f, 1.0f, 2.0f, 4.0f};
+    private String[] mReadingRooms = {};
+    private float[] mOccupancy = {};
 
     private LinearLayout mLinearBarChart;
     private LinearLayout mLinearLineChart;
@@ -64,10 +84,14 @@ public class FragmentOccupancyStatistics extends BaseFragment implements View.On
     private BarData mBarData;
     private LineData mLineData;
 
-    private LineDataSet mOrderDataSetLine;
-    private LineDataSet mInLibraryDataSetLine;
-    private BarDataSet mOrderDataSetBar;
-    private BarDataSet mInLibraryDataSetBar;
+    private LineDataSet mOccupancyDataSetLine;
+    private LineDataSet mNoNoDataSetLine;
+    private BarDataSet mOccupancyDataSetBar;
+    private BarDataSet mNoNoDataSetBar;
+    private IntegralAndOrderOrStatementActivity activity;
+
+    private int mNoNoColor = Color.WHITE;
+    private int mOccupancyColor = Color.RED;
 
     @Override
     protected void onSubClassOnCreateView() {
@@ -77,6 +101,8 @@ public class FragmentOccupancyStatistics extends BaseFragment implements View.On
     @Override
     protected View onCreateSuccessView() {
 
+        activity = (IntegralAndOrderOrStatementActivity) getActivity();
+
         inflate = ViewsUitls.inflate(R.layout.layout_occupancy_statistics);
 
         initInflateView();
@@ -85,21 +111,21 @@ public class FragmentOccupancyStatistics extends BaseFragment implements View.On
     }
 
     private void initInflateView() {
-        mInputStartDay = (EditText) inflate.findViewById(R.id.et_in_library_statistics_start_day_input);
-        mStartDaySearch = (Button) inflate.findViewById(R.id.bt_in_library_statistics_start_search);
-        mStartDaySearch.setOnClickListener(this);
+        mInputFloor = (EditText) inflate.findViewById(R.id.et_occupancy_statistics_start_day_input);
+        mFloorSearch = (Button) inflate.findViewById(R.id.bt_occupancy_statistics_start_search);
+        mFloorSearch.setOnClickListener(this);
 
-        mLinearLineChart = (LinearLayout) inflate.findViewById(R.id.ll_line_chart_in_library_statistics);
-        mLinearBarChart = (LinearLayout) inflate.findViewById(R.id.ll_bar_chart_in_library_statistics);
+        mLinearLineChart = (LinearLayout) inflate.findViewById(R.id.ll_line_chart_occupancy_statistics);
+        mLinearBarChart = (LinearLayout) inflate.findViewById(R.id.ll_bar_chart_occupancy_statistics);
 
-        mLineChart = (LineChart) inflate.findViewById(R.id.line_chart_in_library_statistics);
-        mBarChart = (BarChart) inflate.findViewById(R.id.bar_chart_in_library_statistics);
+        mLineChart = (LineChart) inflate.findViewById(R.id.line_chart_occupancy_statistics);
+        mBarChart = (BarChart) inflate.findViewById(R.id.bar_chart_occupancy_statistics);
         setBarLineChartStyle(mLineChart);
         setBarLineChartStyle(mBarChart);
 
-        mSelectLineChart = (ImageView) inflate.findViewById(R.id.iv_in_library_statistics_skip_broken_line);
+        mSelectLineChart = (ImageView) inflate.findViewById(R.id.iv_occupancy_statistics_skip_broken_line);
         mSelectLineChart.setOnClickListener(this);
-        mSelectBarChart = (ImageView) inflate.findViewById(R.id.iv_in_library_statistics_skip_columnar);
+        mSelectBarChart = (ImageView) inflate.findViewById(R.id.iv_occupancy_statistics_skip_columnar);
         mSelectBarChart.setOnClickListener(this);
 
         // 该对象才是最后set进LineChart的最终数据源
@@ -108,11 +134,9 @@ public class FragmentOccupancyStatistics extends BaseFragment implements View.On
 
     private void setBarLineChartStyle(BarLineChartBase barLineChartBase) {
 
-        barLineChartBase.setMarkerView(new OccupancyMarkerView(getActivity(), R.layout.item_markerview, textTime));
-
         setNoDataTextPaint(barLineChartBase);
 
-        barLineChartBase.setNoDataText("请先在上方选择起始日期");
+        barLineChartBase.setNoDataText("请先在上方选择楼层");
 
         // 图表描述字的设置
         barLineChartBase.setDescription("");//描述文字默认在图表右下角
@@ -199,14 +223,14 @@ public class FragmentOccupancyStatistics extends BaseFragment implements View.On
         barLineChartBase.setPaint(paint, 7);
     }
 
-    private void setChartDate(String[] timeXValue, float[] orderDate, float[] inLibraryDate) {
+    private void setChartDate(String[] readingRooms, float[] occupancys, float[] noNo) {
 
         // 每次设置数据时都重新创建mLineData和mBarData对象
         mLineData = new LineData();
         mBarData = new BarData();
 
         // 清空四个ArrayList数据并添加新数据
-        setDateToListOrXValue(timeXValue, orderDate, inLibraryDate);
+        setDateToListOrXValue(readingRooms, occupancys, noNo);
 
         // 使用这个方法的前提，如果四个DateSet对象有一个不为空则，要使用mLineData或者mBarData 移除掉DateSet对象
         // 使用四个ArrayList数据对象重新创建LineDataSet或者BarDataSet然后赋值给四个DateSet对象
@@ -226,23 +250,23 @@ public class FragmentOccupancyStatistics extends BaseFragment implements View.On
      *使用四个ArrayList数据对象重新创建LineDataSet或者BarDataSet然后赋值给四个DateSet对象*/
     private void getLineBarDateSetAndAddDateSet() {
 
-        if (mOrderDatesLineList.size() > 0) {
-            mOrderDataSetLine = getOrderLineDataSet(mOrderDatesLineList);
-            mLineData.addDataSet(mOrderDataSetLine);
+        if (mOccupancyDatesLineList.size() > 0) {
+            mOccupancyDataSetLine = getOccupancyLineDataSet(mOccupancyDatesLineList);
+            mLineData.addDataSet(mOccupancyDataSetLine);
         }
 
-        if (mInLibraryDatesLineList.size() > 0) {
-            mInLibraryDataSetLine = getInLibraryLineDataSet(mInLibraryDatesLineList);
-            mLineData.addDataSet(mInLibraryDataSetLine);
+        if (mNoNoDatesLineList.size() > 0) {
+            mNoNoDataSetLine = getNoNOLineDataSet(mNoNoDatesLineList);
+            mLineData.addDataSet(mNoNoDataSetLine);
         }
 
-        if (mOrderDatesBarList.size() > 0) {
-            mOrderDataSetBar = getOrderBarDataSet(mOrderDatesBarList);
-            mBarData.addDataSet(mOrderDataSetBar);
+        if (mOccupancyDatesBarList.size() > 0) {
+            mOccupancyDataSetBar = getOccupancyBarDataSet(mOccupancyDatesBarList);
+            mBarData.addDataSet(mOccupancyDataSetBar);
         }
-        if (mInLibraryDatesBarList.size() > 0) {
-            mInLibraryDataSetBar = getInLibraryBarDataSet(mInLibraryDatesBarList);
-            mBarData.addDataSet(mInLibraryDataSetBar);
+        if (mNoNODatesBarList.size() > 0) {
+            mNoNoDataSetBar = getNoNoBarDataSet(mNoNODatesBarList);
+            mBarData.addDataSet(mNoNoDataSetBar);
         }
     }
 
@@ -251,75 +275,75 @@ public class FragmentOccupancyStatistics extends BaseFragment implements View.On
     * orderDate：预约数据
     * inLibraryDate：入馆数据
     * */
-    private void setDateToListOrXValue(String[] timeXValue, float[] orderDate, float[] inLibraryDate) {
-        mOrderDatesLineList.clear();
-        mOrderDatesBarList.clear();
-        mInLibraryDatesLineList.clear();
-        mInLibraryDatesBarList.clear();
-        if (timeXValue != null) {
-            for (int i = 0; i < timeXValue.length; i++) {
+    private void setDateToListOrXValue(String[] readingRooms, float[] occupancys, float[] noNO) {
+        mOccupancyDatesLineList.clear();
+        mOccupancyDatesBarList.clear();
+        mNoNoDatesLineList.clear();
+        mNoNODatesBarList.clear();
+        if (readingRooms != null) {
+            for (int i = 0; i < readingRooms.length; i++) {
                 // 添加X轴的标签文本
-                mLineData.addXValue(timeXValue[i]);
-                mBarData.addXValue(timeXValue[i]);
+                mLineData.addXValue(readingRooms[i]);
+                mBarData.addXValue(readingRooms[i]);
             }
         }
-        if (orderDate != null) {
-            for (int i = 0; i < orderDate.length; i++) {
+        if (occupancys != null) {
+            for (int i = 0; i < occupancys.length; i++) {
                 // 从textOrder数据源中获取数据并创建Entry对象并添加进各自的集合中
-                mOrderDatesLineList.add(new Entry(orderDate[i], i));
-                mOrderDatesBarList.add(new BarEntry(orderDate[i], i));
+                mOccupancyDatesLineList.add(new Entry(occupancys[i], i));
+                mOccupancyDatesBarList.add(new BarEntry(occupancys[i], i));
             }
         }
-        if (inLibraryDate != null) {
-            for (int i = 0; i < inLibraryDate.length; i++) {
+        if (noNO != null) {
+            for (int i = 0; i < noNO.length; i++) {
                 // 从textInLibrary数据源中获取数据并创建Entry对象并添加进各自的集合中
-                mInLibraryDatesLineList.add(new Entry(inLibraryDate[i], i));
-                mInLibraryDatesBarList.add(new BarEntry(inLibraryDate[i], i));
+                mNoNoDatesLineList.add(new Entry(noNO[i], i));
+                mNoNODatesBarList.add(new BarEntry(noNO[i], i));
             }
         }
     }
 
     @NonNull
-    private BarDataSet getInLibraryBarDataSet(ArrayList<BarEntry> inLibraryDatesBar) {
-        BarDataSet inLibraryDataSetBar = new BarDataSet(inLibraryDatesBar, "入馆人数");
+    private BarDataSet getNoNoBarDataSet(ArrayList<BarEntry> inLibraryDatesBar) {
+        BarDataSet inLibraryDataSetBar = new BarDataSet(inLibraryDatesBar, "暂无数据");
         inLibraryDataSetBar.setAxisDependency(YAxis.AxisDependency.LEFT);
         inLibraryDataSetBar.setDrawValues(false); // 设置是否在点上绘制Value
-        inLibraryDataSetBar.setColor(Color.RED);
+        inLibraryDataSetBar.setColor(mNoNoColor);
         return inLibraryDataSetBar;
     }
 
     @NonNull
-    private BarDataSet getOrderBarDataSet(ArrayList<BarEntry> orderDatesBar) {
-        BarDataSet orderDataSetBar = new BarDataSet(orderDatesBar, "预约人数");
+    private BarDataSet getOccupancyBarDataSet(ArrayList<BarEntry> orderDatesBar) {
+        BarDataSet orderDataSetBar = new BarDataSet(orderDatesBar, "占有率");
         orderDataSetBar.setAxisDependency(YAxis.AxisDependency.LEFT);
         orderDataSetBar.setDrawValues(false); // 设置是否在点上绘制Value
-        orderDataSetBar.setColor(Color.BLACK);
+        orderDataSetBar.setColor(mOccupancyColor);
         return orderDataSetBar;
     }
 
     @NonNull
-    private LineDataSet getInLibraryLineDataSet(ArrayList<Entry> inLibraryDatesLine) {
-        LineDataSet inLibraryDataSetLine = new LineDataSet(inLibraryDatesLine, "入馆人数");
+    private LineDataSet getNoNOLineDataSet(ArrayList<Entry> inLibraryDatesLine) {
+        LineDataSet inLibraryDataSetLine = new LineDataSet(inLibraryDatesLine, "暂无数据");
         inLibraryDataSetLine.setAxisDependency(YAxis.AxisDependency.LEFT);
         inLibraryDataSetLine.setLineWidth(2f);// 设置该组数据折线的线的宽度
         inLibraryDataSetLine.setCircleRadius(3f);// 设置该组数据折线上的节点圆圈的大小
         inLibraryDataSetLine.setDrawValues(false); // 设置是否在点上绘制Value
         inLibraryDataSetLine.setHighLightColor(Color.TRANSPARENT); // 设置点击某个点时，横竖两条线的颜色
-        inLibraryDataSetLine.setColor(Color.RED);
-        inLibraryDataSetLine.setCircleColor(Color.RED);
+        inLibraryDataSetLine.setColor(mNoNoColor);
+        inLibraryDataSetLine.setCircleColor(mNoNoColor);
         return inLibraryDataSetLine;
     }
 
     @NonNull
-    private LineDataSet getOrderLineDataSet(ArrayList<Entry> orderDatesLine) {
-        LineDataSet orderDataSetLine = new LineDataSet(orderDatesLine, "预约人数");
+    private LineDataSet getOccupancyLineDataSet(ArrayList<Entry> orderDatesLine) {
+        LineDataSet orderDataSetLine = new LineDataSet(orderDatesLine, "占有率");
         orderDataSetLine.setAxisDependency(YAxis.AxisDependency.LEFT);
         orderDataSetLine.setLineWidth(2f);// 设置该组数据折线的线的宽度
         orderDataSetLine.setCircleRadius(3f);// 设置该组数据折线上的节点圆圈的大小
         orderDataSetLine.setDrawValues(false); // 设置是否在点上绘制Value
         orderDataSetLine.setHighLightColor(Color.TRANSPARENT); // 设置点击某个点时，横竖两条线的颜色
-        orderDataSetLine.setColor(Color.BLACK);
-        orderDataSetLine.setCircleColor(Color.BLACK);
+        orderDataSetLine.setColor(mOccupancyColor);
+        orderDataSetLine.setCircleColor(mOccupancyColor);
         return orderDataSetLine;
     }
 
@@ -335,7 +359,7 @@ public class FragmentOccupancyStatistics extends BaseFragment implements View.On
     public void onClick(View v) {
 
         switch (v.getId()) {
-            case R.id.iv_in_library_statistics_skip_broken_line:
+            case R.id.iv_occupancy_statistics_skip_broken_line:
                 if (WHAT_CHART_NO_PRESSED == LINE_CHART_NO_PRESSED) {// 当折线没被选中时点击图标才有用
                     System.out.println("折线被选中");
 
@@ -348,7 +372,7 @@ public class FragmentOccupancyStatistics extends BaseFragment implements View.On
                     WHAT_CHART_NO_PRESSED = BAR_CHART_NO_PRESSED;
                 }
                 break;
-            case R.id.iv_in_library_statistics_skip_columnar:
+            case R.id.iv_occupancy_statistics_skip_columnar:
                 if (WHAT_CHART_NO_PRESSED == BAR_CHART_NO_PRESSED) {// 当柱状没被选中时点击图标才有用
                     System.out.println("柱状被选中");
 
@@ -361,14 +385,89 @@ public class FragmentOccupancyStatistics extends BaseFragment implements View.On
                     WHAT_CHART_NO_PRESSED = LINE_CHART_NO_PRESSED;
                 }
                 break;
-            case R.id.bt_in_library_statistics_start_search:
-
-                // TODO 获取网络数据，并处理后设置然后显示图表
-                setChartDate(textTime, null, textInLibrary);
-
+            case R.id.bt_occupancy_statistics_start_search:
+                requestGetStatisticsDate();
                 break;
         }
 
+    }
+
+    private void requestGetStatisticsDate() {
+
+        String floor = mInputFloor.getText().toString();
+        if (StringUtils.isEmpty(floor)) {
+            ToastUtil.showToast(getActivity(), "请选择楼层");
+            return;
+        }
+
+        OkHttpClient okHttpClient = OkHttpManger.getInstance().getOkHttpClient();
+        RequestBody formBody = new FormBody.Builder().add("floor", floor).build();
+
+        String address = SharedPreferencesUtil.getString(
+                ViewsUitls.getContext(), StringsFiled.IP_ADDRESS_PREFIX, "");
+        System.out.println(address + IpFiled.OCCUPANCY_STATISTICS);
+        Request request = new Request.Builder()
+                .url(address + IpFiled.OCCUPANCY_STATISTICS)
+                .post(formBody)
+                .build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                ViewsUitls.runInMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtil.showToast(getActivity(), "网络异常，请稍候");
+                    }
+                });
+                System.out.println("========================onFailure========================");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String result = response.body().string();
+                System.out.println(result);
+                ViewsUitls.runInMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!result.contains("html")) {
+                            analysisStatisticDate(result);
+                            if (mOccupancy.length == 0) {
+                                ToastUtil.showToast(getActivity(), "此楼层的阅览室暂无数据");
+                            } else {
+                                setChartDate(mReadingRooms, mOccupancy, null);
+                                mLineChart.setMarkerView(new OccupancyMarkerView(getActivity(), R.layout.item_markerview, mReadingRooms));
+                                mBarChart.setMarkerView(new OccupancyMarkerView(getActivity(), R.layout.item_markerview, mReadingRooms));
+                            }
+                        } else {
+                            ToastUtil.showToast(getActivity(), "服务器异常，请稍候");
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private void analysisStatisticDate(String result) {
+        try {
+            final JSONObject object = new JSONObject(result);
+            if (object.has("data_area")) {
+                JSONArray dataArea = object.optJSONArray("data_area");
+                mReadingRooms = new String[dataArea.length() + 1];
+                for (int i = 0; i < dataArea.length(); i++) {
+                    mReadingRooms[i] = dataArea.optString(i);
+                }
+                mReadingRooms[dataArea.length()] = "  ";
+            }
+            if (object.has("data_oucc")) {
+                JSONArray dataOccupancy = object.optJSONArray("data_oucc");
+                mOccupancy = new float[dataOccupancy.length()];
+                for (int i = 0; i < dataOccupancy.length(); i++) {
+                    mOccupancy[i] = dataOccupancy.optInt(i);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setLineBarVisibility(int isShow1, int isShow2) {

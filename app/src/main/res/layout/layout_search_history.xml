@@ -23,7 +23,8 @@
             android:layout_height="wrap_content"
             android:gravity="right"
             android:text="清空历史"
-            android:textColor="@color/clear_search_histroy" />
+            android:textColor="@color/red" />
+        <!--@drawable/textview_color_red_gray-->
     </LinearLayout>
 
     <View

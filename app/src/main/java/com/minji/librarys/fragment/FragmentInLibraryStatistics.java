@@ -24,14 +24,34 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.utils.Utils;
+import com.minji.librarys.IpFiled;
 import com.minji.librarys.R;
+import com.minji.librarys.StringsFiled;
 import com.minji.librarys.base.BaseFragment;
 import com.minji.librarys.base.ContentPage;
 import com.minji.librarys.chart.InLibraryMarkerView;
 import com.minji.librarys.chart.PersonNumberFormatter;
+import com.minji.librarys.http.OkHttpManger;
+import com.minji.librarys.ui.IntegralAndOrderOrStatementActivity;
+import com.minji.librarys.uitls.SharedPreferencesUtil;
+import com.minji.librarys.uitls.StringUtils;
+import com.minji.librarys.uitls.ToastUtil;
 import com.minji.librarys.uitls.ViewsUitls;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * Created by user on 2016/9/20.
@@ -56,9 +76,9 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
     private ArrayList<BarEntry> mOrderDatesBarList = new ArrayList<>();
     private ArrayList<BarEntry> mInLibraryDatesBarList = new ArrayList<>();
 
-    private String[] textTime = {"09/02", "09/03", "09/04", "09/05", "09/06", "09/08", "09/09", "09/22", "09/23", "09/28","     "};
-    private float[] textInLibrary = {0.0f, 1.0f, 2.0f, 4.0f, 2.0f, 7.0f, 4.0f, 5.0f, 6.0f, 2.0f,};
-    private float[] textOrder = {2.0f, 3.0f, 3.0f, 1.0f, 8.0f, 3.0f, 4.0f, 0.0f, 1.0f, 2.0f};
+    private String[] mInLibraryTime = {};
+    private float[] mInLibraryPerson = {0.0f, 1.0f, 2.0f, 4.0f, 2.0f, 7.0f, 4.0f, 5.0f, 6.0f, 2.0f,};
+    private float[] mOrderPerson = {2.0f, 3.0f, 3.0f, 1.0f, 8.0f, 3.0f, 4.0f, 0.0f, 1.0f, 2.0f};
 
     private LinearLayout mLinearBarChart;
     private LinearLayout mLinearLineChart;
@@ -70,14 +90,20 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
     private LineDataSet mInLibraryDataSetLine;
     private BarDataSet mOrderDataSetBar;
     private BarDataSet mInLibraryDataSetBar;
+    private IntegralAndOrderOrStatementActivity activity;
+
+    private int mInLibraryPersonColor = Color.RED;
+    private int mOrderPersonColor = Color.BLACK;
 
     @Override
     protected void onSubClassOnCreateView() {
-         loadDataAndRefresh();
+        loadDataAndRefresh();
     }
 
     @Override
     protected View onCreateSuccessView() {
+
+        activity = (IntegralAndOrderOrStatementActivity) getActivity();
 
         inflate = ViewsUitls.inflate(R.layout.layout_in_library_statistics);
 
@@ -88,6 +114,7 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
 
     private void initInflateView() {
         mInputStartDay = (EditText) inflate.findViewById(R.id.et_in_library_statistics_start_day_input);
+        mInputStartDay.setOnClickListener(this);
         mStartDaySearch = (Button) inflate.findViewById(R.id.bt_in_library_statistics_start_search);
         mStartDaySearch.setOnClickListener(this);
 
@@ -109,8 +136,6 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
     }
 
     private void setBarLineChartStyle(BarLineChartBase barLineChartBase) {
-
-        barLineChartBase.setMarkerView(new InLibraryMarkerView(getActivity(), R.layout.item_markerview,textTime));
 
         setNoDataTextPaint(barLineChartBase);
 
@@ -286,7 +311,7 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
         BarDataSet inLibraryDataSetBar = new BarDataSet(inLibraryDatesBar, "入馆人数");
         inLibraryDataSetBar.setAxisDependency(YAxis.AxisDependency.LEFT);
         inLibraryDataSetBar.setDrawValues(false); // 设置是否在点上绘制Value
-        inLibraryDataSetBar.setColor(Color.RED);
+        inLibraryDataSetBar.setColor(mInLibraryPersonColor);
         return inLibraryDataSetBar;
     }
 
@@ -295,7 +320,7 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
         BarDataSet orderDataSetBar = new BarDataSet(orderDatesBar, "预约人数");
         orderDataSetBar.setAxisDependency(YAxis.AxisDependency.LEFT);
         orderDataSetBar.setDrawValues(false); // 设置是否在点上绘制Value
-        orderDataSetBar.setColor(Color.BLACK);
+        orderDataSetBar.setColor(mOrderPersonColor);
         return orderDataSetBar;
     }
 
@@ -307,8 +332,8 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
         inLibraryDataSetLine.setCircleRadius(3f);// 设置该组数据折线上的节点圆圈的大小
         inLibraryDataSetLine.setDrawValues(false); // 设置是否在点上绘制Value
         inLibraryDataSetLine.setHighLightColor(Color.TRANSPARENT); // 设置点击某个点时，横竖两条线的颜色
-        inLibraryDataSetLine.setColor(Color.RED);
-        inLibraryDataSetLine.setCircleColor(Color.RED);
+        inLibraryDataSetLine.setColor(mInLibraryPersonColor);
+        inLibraryDataSetLine.setCircleColor(mInLibraryPersonColor);
         return inLibraryDataSetLine;
     }
 
@@ -320,8 +345,8 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
         orderDataSetLine.setCircleRadius(3f);// 设置该组数据折线上的节点圆圈的大小
         orderDataSetLine.setDrawValues(false); // 设置是否在点上绘制Value
         orderDataSetLine.setHighLightColor(Color.TRANSPARENT); // 设置点击某个点时，横竖两条线的颜色
-        orderDataSetLine.setColor(Color.BLACK);
-        orderDataSetLine.setCircleColor(Color.BLACK);
+        orderDataSetLine.setColor(mOrderPersonColor);
+        orderDataSetLine.setCircleColor(mOrderPersonColor);
         return orderDataSetLine;
     }
 
@@ -364,13 +389,101 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
                 }
                 break;
             case R.id.bt_in_library_statistics_start_search:
+                requestGetStatisticsDate();
+                break;
+            case R.id.et_in_library_statistics_start_day_input:
+                // TODO 备选 选择时间
 
-                // TODO 获取网络数据，并处理后设置然后显示图表
-                setChartDate(textTime, textOrder, textInLibrary);
 
                 break;
         }
 
+    }
+
+    private void requestGetStatisticsDate() {
+
+        final String startDay = mInputStartDay.getText().toString();
+        if (StringUtils.isEmpty(startDay)) {
+            ToastUtil.showToast(getActivity(), "请选择起始日期");
+            return;
+        }
+
+        OkHttpClient okHttpClient = OkHttpManger.getInstance().getOkHttpClient();
+        RequestBody formBody = new FormBody.Builder().add("sdate", startDay).add("type", "1").build();
+
+        String address = SharedPreferencesUtil.getString(
+                ViewsUitls.getContext(), StringsFiled.IP_ADDRESS_PREFIX, "");
+        System.out.println(address + IpFiled.IN_LIBRARY_STATISTICS);
+        Request request = new Request.Builder()
+                .url(address + IpFiled.IN_LIBRARY_STATISTICS)
+                .post(formBody)
+                .build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                ViewsUitls.runInMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtil.showToast(getActivity(), "网络异常，请稍候");
+                    }
+                });
+                System.out.println("========================onFailure========================");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String result = response.body().string();
+                System.out.println(result);
+                ViewsUitls.runInMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!result.contains("html")) {
+                            analysisStatisticDate(result);
+                            if (mOrderPerson.length == 0 && mInLibraryPerson.length == 0) {
+                                ToastUtil.showToast(getActivity(), "此时间段暂无数据");
+                            } else {
+                                setChartDate(mInLibraryTime, mOrderPerson, mInLibraryPerson);
+                                mLineChart.setMarkerView(new InLibraryMarkerView(getActivity(), R.layout.item_markerview, mInLibraryTime,startDay));
+                                mBarChart.setMarkerView(new InLibraryMarkerView(getActivity(), R.layout.item_markerview, mInLibraryTime, startDay));
+                            }
+                        } else {
+                            ToastUtil.showToast(getActivity(), "服务器异常，请稍候");
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private void analysisStatisticDate(String result) {
+        try {
+            final JSONObject object = new JSONObject(result);
+            if (object.has("data_date")) {
+                JSONArray timeDate = object.optJSONArray("data_date");
+                mInLibraryTime = new String[timeDate.length() + 1];
+                for (int i = 0; i < timeDate.length(); i++) {
+                    String string = timeDate.optString(i);
+                    mInLibraryTime[i] = string.substring(5, string.length());
+                }
+                mInLibraryTime[timeDate.length()] = "  ";
+            }
+            if (object.has("data_bespeak")) {
+                JSONArray dataBespeak = object.optJSONArray("data_bespeak");
+                mOrderPerson = new float[dataBespeak.length()];
+                for (int i = 0; i < dataBespeak.length(); i++) {
+                    mOrderPerson[i] = dataBespeak.optInt(i);
+                }
+            }
+            if (object.has("data_enter")) {
+                JSONArray dataEnter = object.optJSONArray("data_enter");
+                mInLibraryPerson = new float[dataEnter.length()];
+                for (int i = 0; i < dataEnter.length(); i++) {
+                    mInLibraryPerson[i] = dataEnter.optInt(i);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setLineBarVisibility(int isShow1, int isShow2) {
