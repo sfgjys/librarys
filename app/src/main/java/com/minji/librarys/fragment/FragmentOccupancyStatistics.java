@@ -92,6 +92,8 @@ public class FragmentOccupancyStatistics extends BaseFragment implements View.On
 
     private int mNoNoColor = Color.WHITE;
     private int mOccupancyColor = Color.RED;
+    private View mBarLegend;
+    private View mLineLegend;
 
     @Override
     protected void onSubClassOnCreateView() {
@@ -128,8 +130,8 @@ public class FragmentOccupancyStatistics extends BaseFragment implements View.On
         mSelectBarChart = (ImageView) inflate.findViewById(R.id.iv_occupancy_statistics_skip_columnar);
         mSelectBarChart.setOnClickListener(this);
 
-        // 该对象才是最后set进LineChart的最终数据源
-
+        mLineLegend = inflate.findViewById(R.id.tv_line_chart_occupancy_legend);
+        mBarLegend = inflate.findViewById(R.id.tv_bar_chart_occupancy_legend);
     }
 
     private void setBarLineChartStyle(BarLineChartBase barLineChartBase) {
@@ -400,6 +402,9 @@ public class FragmentOccupancyStatistics extends BaseFragment implements View.On
             return;
         }
 
+        activity.setLoadingVisibility(View.VISIBLE);
+        activity.setIsInterruptTouch(true);
+
         OkHttpClient okHttpClient = OkHttpManger.getInstance().getOkHttpClient();
         RequestBody formBody = new FormBody.Builder().add("floor", floor).build();
 
@@ -416,6 +421,8 @@ public class FragmentOccupancyStatistics extends BaseFragment implements View.On
                 ViewsUitls.runInMainThread(new Runnable() {
                     @Override
                     public void run() {
+                        activity.setLoadingVisibility(View.GONE);
+                        activity.setIsInterruptTouch(false);
                         ToastUtil.showToast(getActivity(), "网络异常，请稍候");
                     }
                 });
@@ -429,11 +436,16 @@ public class FragmentOccupancyStatistics extends BaseFragment implements View.On
                 ViewsUitls.runInMainThread(new Runnable() {
                     @Override
                     public void run() {
+                        activity.setLoadingVisibility(View.GONE);
+                        activity.setIsInterruptTouch(false);
                         if (!result.contains("html")) {
                             analysisStatisticDate(result);
                             if (mOccupancy.length == 0) {
                                 ToastUtil.showToast(getActivity(), "此楼层的阅览室暂无数据");
                             } else {
+                                mLineLegend.setVisibility(View.VISIBLE);
+                                mBarLegend.setVisibility(View.VISIBLE);
+
                                 setChartDate(mReadingRooms, mOccupancy, null);
                                 mLineChart.setMarkerView(new OccupancyMarkerView(getActivity(), R.layout.item_markerview, mReadingRooms));
                                 mBarChart.setMarkerView(new OccupancyMarkerView(getActivity(), R.layout.item_markerview, mReadingRooms));

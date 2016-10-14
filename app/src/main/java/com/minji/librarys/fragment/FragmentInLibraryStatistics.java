@@ -32,6 +32,8 @@ import com.minji.librarys.base.ContentPage;
 import com.minji.librarys.chart.InLibraryMarkerView;
 import com.minji.librarys.chart.PersonNumberFormatter;
 import com.minji.librarys.http.OkHttpManger;
+import com.minji.librarys.observer.MySubject;
+import com.minji.librarys.observer.Observers;
 import com.minji.librarys.ui.IntegralAndOrderOrStatementActivity;
 import com.minji.librarys.uitls.SharedPreferencesUtil;
 import com.minji.librarys.uitls.StringUtils;
@@ -56,7 +58,7 @@ import okhttp3.Response;
 /**
  * Created by user on 2016/9/20.
  */
-public class FragmentInLibraryStatistics extends BaseFragment implements View.OnClickListener {
+public class FragmentInLibraryStatistics extends BaseFragment implements View.OnClickListener, Observers {
 
     private View inflate;
     private EditText mInputStartDay;
@@ -94,6 +96,10 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
 
     private int mInLibraryPersonColor = Color.RED;
     private int mOrderPersonColor = Color.BLACK;
+    private View mLineLegend1;
+    private View mLineLegend2;
+    private View mBarLegend1;
+    private View mBarLegend2;
 
     @Override
     protected void onSubClassOnCreateView() {
@@ -131,8 +137,10 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
         mSelectBarChart = (ImageView) inflate.findViewById(R.id.iv_in_library_statistics_skip_columnar);
         mSelectBarChart.setOnClickListener(this);
 
-        // 该对象才是最后set进LineChart的最终数据源
-
+        mLineLegend1 = inflate.findViewById(R.id.tv_line_chart_in_library_legend_1);
+        mLineLegend2 = inflate.findViewById(R.id.tv_line_chart_in_library_legend_2);
+        mBarLegend1 = inflate.findViewById(R.id.tv_bar_chart_in_library_legend_1);
+        mBarLegend2 = inflate.findViewById(R.id.tv_bar_chart_in_library_legend_2);
     }
 
     private void setBarLineChartStyle(BarLineChartBase barLineChartBase) {
@@ -393,8 +401,7 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
                 break;
             case R.id.et_in_library_statistics_start_day_input:
                 // TODO 备选 选择时间
-
-
+                activity.showDialog(1);
                 break;
         }
 
@@ -407,6 +414,9 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
             ToastUtil.showToast(getActivity(), "请选择起始日期");
             return;
         }
+
+        activity.setLoadingVisibility(View.VISIBLE);
+        activity.setIsInterruptTouch(true);
 
         OkHttpClient okHttpClient = OkHttpManger.getInstance().getOkHttpClient();
         RequestBody formBody = new FormBody.Builder().add("sdate", startDay).add("type", "1").build();
@@ -424,6 +434,8 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
                 ViewsUitls.runInMainThread(new Runnable() {
                     @Override
                     public void run() {
+                        activity.setLoadingVisibility(View.GONE);
+                        activity.setIsInterruptTouch(false);
                         ToastUtil.showToast(getActivity(), "网络异常，请稍候");
                     }
                 });
@@ -437,13 +449,20 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
                 ViewsUitls.runInMainThread(new Runnable() {
                     @Override
                     public void run() {
+                        activity.setLoadingVisibility(View.GONE);
+                        activity.setIsInterruptTouch(false);
                         if (!result.contains("html")) {
                             analysisStatisticDate(result);
                             if (mOrderPerson.length == 0 && mInLibraryPerson.length == 0) {
                                 ToastUtil.showToast(getActivity(), "此时间段暂无数据");
                             } else {
+                                mLineLegend1.setVisibility(View.VISIBLE);
+                                mLineLegend2.setVisibility(View.VISIBLE);
+                                mBarLegend1.setVisibility(View.VISIBLE);
+                                mBarLegend2.setVisibility(View.VISIBLE);
+
                                 setChartDate(mInLibraryTime, mOrderPerson, mInLibraryPerson);
-                                mLineChart.setMarkerView(new InLibraryMarkerView(getActivity(), R.layout.item_markerview, mInLibraryTime,startDay));
+                                mLineChart.setMarkerView(new InLibraryMarkerView(getActivity(), R.layout.item_markerview, mInLibraryTime, startDay));
                                 mBarChart.setMarkerView(new InLibraryMarkerView(getActivity(), R.layout.item_markerview, mInLibraryTime, startDay));
                             }
                         } else {
@@ -491,4 +510,20 @@ public class FragmentInLibraryStatistics extends BaseFragment implements View.On
         mLinearBarChart.setVisibility(isShow2);
     }
 
+    @Override
+    public void update(int mYear, int mMonth, int mDay) {
+
+        StringBuilder stringBuilder = new StringBuilder().append(mYear)
+                .append("-")
+                .append((mMonth + 1) < 10 ? "0" + (mMonth + 1) : (mMonth + 1))
+                .append("-").append((mDay < 10) ? "0" + mDay : mDay);
+
+        mInputStartDay.setText(stringBuilder.toString());
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        MySubject.getInstance().del(this);
+    }
 }

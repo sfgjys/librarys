@@ -5,7 +5,7 @@ package com.minji.librarys;
  */
 public class ObserverTag {
 
-    public static int ItemCancelOrderButton = 0;
+    public final static int ItemCancelOrderButton = 0;
 
 
 }

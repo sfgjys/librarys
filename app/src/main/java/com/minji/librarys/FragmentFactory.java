@@ -7,6 +7,7 @@ import com.minji.librarys.fragment.FragmentHistoryIntegral;
 import com.minji.librarys.fragment.FragmentInLibraryStatistics;
 import com.minji.librarys.fragment.FragmentOccupancyStatistics;
 import com.minji.librarys.fragment.FragmentTodayIntegral;
+import com.minji.librarys.observer.MySubject;
 
 
 public class FragmentFactory {
@@ -28,7 +29,9 @@ public class FragmentFactory {
         } else if ("StatementDetail".equals(differentiate)) {
             switch (position) {
                 case 0:
-                    fragment = new FragmentInLibraryStatistics();
+                    FragmentInLibraryStatistics fragmentInLibraryStatistics = new FragmentInLibraryStatistics();
+                    MySubject.getInstance().add(fragmentInLibraryStatistics);
+                    fragment = fragmentInLibraryStatistics;
                     break;
                 case 1:
                     fragment = new FragmentOccupancyStatistics();
