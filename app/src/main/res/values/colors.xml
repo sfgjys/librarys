@@ -27,4 +27,5 @@
     <color name="clear_search_histroy">#FF0000</color>
     <color name="expend_integral_number_color">#FF6C09</color>
     <color name="loading_background_thin_gray">#66000000</color>
+    <color name="window_message_read">#a9b7b7</color>
 </resources>

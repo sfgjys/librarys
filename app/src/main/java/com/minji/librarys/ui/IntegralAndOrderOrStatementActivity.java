@@ -47,6 +47,7 @@ public class IntegralAndOrderOrStatementActivity extends BaseActivity {
         }
     }
 
+    /*========================================以下都是弹出系统自带的时间选择对话框================================================*/
     private static final int DATE_DIALOG_ID = 1;
 
     @Override

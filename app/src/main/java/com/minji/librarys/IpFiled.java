@@ -35,7 +35,13 @@ public class IpFiled {
 
     public final static String IS_CENCEL_ORDER = MOBILE + "removeBespeak";
 
+    public final static String WINDOW_INFORMATION_LIST = MOBILE + "getMyMessage";
+
+    public final static String WINDOW_INFORMATION_CONTENT = MOBILE + "getMyMessageContent";
+
     public final static String IN_LIBRARY_STATISTICS = IP + "echarts/lib_echarts";
 
     public final static String OCCUPANCY_STATISTICS = IP + "echarts/area_echarts";
+
+
 }
