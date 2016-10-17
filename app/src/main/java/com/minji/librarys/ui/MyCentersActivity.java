@@ -93,6 +93,8 @@ public class MyCentersActivity extends BaseActivity implements View.OnClickListe
         myIntegral.setOnClickListener(this);
         RelativeLayout myOrder = (RelativeLayout) findViewById(R.id.my_center_bottom_part_normal_my_order);
         myOrder.setOnClickListener(this);
+        RelativeLayout myOrderVoucher = (RelativeLayout) findViewById(R.id.my_center_bottom_part_normal_my_order_voucher);
+        myOrderVoucher.setOnClickListener(this);
     }
 
     private void requestStudentNumberAndIntegral() {
@@ -112,7 +114,7 @@ public class MyCentersActivity extends BaseActivity implements View.OnClickListe
         RequestBody allPointFormBody = new FormBody.Builder()
                 .add("userid", mUserId).build();
         Request allPointRequest = new Request.Builder()
-                .url(address+IpFiled.MY_CENTER_INFORMATION_TWO)
+                .url(address + IpFiled.MY_CENTER_INFORMATION_TWO)
                 .post(allPointFormBody)
                 .build();
         okHttpClient.newCall(meInformationRequest).enqueue(new Callback() {
@@ -184,6 +186,9 @@ public class MyCentersActivity extends BaseActivity implements View.OnClickListe
                 break;
             case R.id.my_center_bottom_part_normal_my_order:
                 skipFourActivity("我的预约");
+                break;
+            case R.id.my_center_bottom_part_normal_my_order_voucher:
+                skipFourActivity("预约凭证");
                 break;
             case R.id.tv_my_center_top_part_head_portrait:
                 selectImageDialog();
