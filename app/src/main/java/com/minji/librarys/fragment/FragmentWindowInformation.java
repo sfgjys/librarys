@@ -1,9 +1,16 @@
 package com.minji.librarys.fragment;
 
+import android.graphics.Color;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.minji.librarys.IpFiled;
 import com.minji.librarys.R;
@@ -187,11 +194,28 @@ public class FragmentWindowInformation extends BaseFragment {
     }
 
     private void showWindowMessageDialog() {
+        final AlertDialog dialog = new AlertDialog.Builder(getActivity()).create();
+        WindowManager.LayoutParams attributes = dialog.getWindow().getAttributes();// 获取对话框的属性集
+        WindowManager m = getActivity().getWindowManager();
+        Display d = m.getDefaultDisplay(); // 为获取屏幕宽、高
+        attributes.width = (int) (d.getWidth() * 0.9);
+        dialog.show();
+        // 设置对话框中自定义内容
+        Window window = dialog.getWindow();
+        window.getDecorView().setBackgroundColor(Color.TRANSPARENT);// 获取对话框的根布局，设置其背景为透明，自定义对话框就没有白色的边框了
+        window.setContentView(R.layout.dialog_window_message_content);
 
-
-
-
-
+        TextView dialogTitle = (TextView) window.findViewById(R.id.tv_dialog_top_title);
+        dialogTitle.setText(mMessageTitle);
+        TextView dialogContent = (TextView) window.findViewById(R.id.tv_window_message_content);
+        dialogContent.setText(mMessageContent);
+        ImageView cancel = (ImageView) window.findViewById(R.id.iv_dialog_right_top_cancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
 
     }
 }
