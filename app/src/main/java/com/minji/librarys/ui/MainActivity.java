@@ -83,6 +83,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 skipToActivity(SearchSeatActivity.class, "查询座位");
                 break;
             case R.id.mi_main_booking_rules:
+                skipToActivity(IntegralAndOrderOrStatementActivity.class, "预约规则");
                 break;
             case R.id.mi_main_cancel_order:
                 skipToActivity(CancelOrderActivity.class, "取消预约");

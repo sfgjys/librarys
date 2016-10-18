@@ -3,9 +3,9 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimaryDark">@color/black</item>
+        <item name="colorAccent">@color/text_gray</item>
         <item name="windowNoTitle">true</item>
     </style>
 
@@ -202,14 +202,12 @@
         <item name="android:textSize">18dp</item>
         <item name="android:textStyle">bold</item>
     </style>
-
     <style name="order_voucher_textview_style_left" parent="order_voucher_textview_base">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">0.4</item>
         <item name="android:gravity">right</item>
         <item name="android:textColor">@color/black</item>
     </style>
-
     <style name="order_voucher_textview_style_right" parent="order_voucher_textview_base">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">1</item>

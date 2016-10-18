@@ -9,6 +9,7 @@ import com.minji.librarys.R;
 import com.minji.librarys.base.BaseActivity;
 import com.minji.librarys.fragment.FragmentIntegralDetail;
 import com.minji.librarys.fragment.FragmentMyOrder;
+import com.minji.librarys.fragment.FragmentOrderBookingRules;
 import com.minji.librarys.fragment.FragmentOrderVoucher;
 import com.minji.librarys.fragment.FragmentStatementDetail;
 import com.minji.librarys.fragment.FragmentUpdateInformation;
@@ -48,6 +49,9 @@ public class IntegralAndOrderOrStatementActivity extends BaseActivity {
         if (stringTitle.equals("报表统计")) {
             initCalendar();
             getSupportFragmentManager().beginTransaction().replace(R.id.fl_base_content, new FragmentStatementDetail()).commit();
+        }
+        if (stringTitle.equals("预约规则")) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fl_base_content, new FragmentOrderBookingRules()).commit();
         }
     }
 
